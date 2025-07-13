@@ -7,23 +7,24 @@
 #include <iostream>
 #include "misc/Logger.h"
 
-class Window {
-public:
+namespace Terra {
 
-    Window(int width, int height, const std::string& title = "Game");
-    ~Window();
-    
-    GLFWwindow* getWindow() const;
-    glm::vec2 getSize() { return { params.width, params.height }; }
+    class Window {
+    public:
+        Window(int width, int height, const std::string& title = "Game");
+        ~Window();
 
-private:
+        GLFWwindow* getWindow() const;
+        glm::vec2 getSize() { return { params.width, params.height }; }
 
-    GLFWwindow* window = nullptr;
-    GLFWglproc context = nullptr;
+    private:
+        GLFWwindow* window = nullptr;
+        GLFWglproc context = nullptr;
 
-    struct WindowParams
-    {
-        int width;
-        int height;
-    } params;
-};
+        struct WindowParams
+        {
+            int width;
+            int height;
+        } params{};
+    };
+}

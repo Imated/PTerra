@@ -4,16 +4,19 @@
 
 #include "renderer/Window.h"
 
-class Terra
+namespace Terra
 {
-public:
-    Terra();
-    void init();
-    void run();
-    void gameLoop();
+    class Terra
+    {
+    public:
+        Terra();
+        void init();
+        void run();
+        void gameLoop();
 
-private:
-    std::unique_ptr<Window> window;
-    double deltaTime = 0.0f;
-    std::chrono::time_point<std::chrono::system_clock> startFrame;
-};
+    private:
+        std::unique_ptr<Window> window;
+        double deltaTime = 0.0f;
+        std::chrono::time_point<std::chrono::system_clock> startFrame;
+    };
+}

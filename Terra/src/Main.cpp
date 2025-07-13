@@ -2,6 +2,6 @@
 
 int main(int argc, char* argv[])
 {
-    Terra().run();
+    Terra::Terra().run();
     return 0;
 }
