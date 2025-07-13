@@ -2,7 +2,7 @@
 #include <string>
 
 #include "glad/glad.h"
-#include "glfw3.h"
+#include "GLFW/glfw3.h"
 #include "glm/vec2.hpp"
 #include <iostream>
 #include "misc/Logger.h"
@@ -12,10 +12,6 @@ public:
 
     Window(int width, int height, const std::string& title = "Game");
     ~Window();
-    
-    void clear();
-    
-    void setTitle(const std::string&) const;
     
     GLFWwindow* getWindow() const;
     glm::vec2 getSize() { return { params.width, params.height }; }

@@ -580,6 +580,7 @@
     <ClInclude Include="src\Terra.h" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CMakelists.txt" />
     <Content Include="libs\glfw\lib\glfw3.dll" />
     <Content Include="libs\glfw\lib\glfw3.lib" />
     <Content Include="libs\glfw\lib\glfw3dll.lib" />

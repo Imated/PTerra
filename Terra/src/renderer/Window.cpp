@@ -1,7 +1,7 @@
 ﻿#include "Window.h"
 
-void windowSizeCallback(GLFWwindow* window, int width, int height);
-void errorCallback(int error, const char* description);
+static void windowSizeCallback(GLFWwindow* window, int width, int height);
+static void errorCallback(int error, const char* description);
 
 Window::Window(int width, int height, const std::string& title)
 {
@@ -64,20 +64,10 @@ Window::Window(int width, int height, const std::string& title)
     INFO("Initialized Successfully.");
 }
 
-void Window::clear()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
 Window::~Window()
 {
     glfwDestroyWindow(window);
     glfwTerminate();
-}
-
-void Window::setTitle(const std::string& title) const
-{
-    glfwSetWindowTitle(window, title.c_str());
 }
 
 static void windowSizeCallback(GLFWwindow* window, int width, int height)
