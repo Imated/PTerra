@@ -24,7 +24,17 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}")
+add_executable("${CMAKE_PROJECT_NAME}"
+		src/world/Chunk.h
+		src/world/World.cpp
+		src/world/World.h
+		src/world/Tile.h
+		src/renderer/Texture.cpp
+		src/renderer/Texture.h
+		src/renderer/Renderer.cpp
+		src/renderer/Renderer.h
+		src/renderer/Shader.cpp
+)
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 17)
 

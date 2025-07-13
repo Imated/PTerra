@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "renderer/Window.h"
+#include "world/World.h"
 
 namespace Terra
 {
@@ -16,6 +17,7 @@ namespace Terra
 
     private:
         std::unique_ptr<Window> window;
+        std::unique_ptr<World> world;
         double deltaTime = 0.0f;
         std::chrono::time_point<std::chrono::system_clock> startFrame;
     };
