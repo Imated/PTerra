@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <chrono>
 #include <memory>
 
 #include "renderer/Window.h"
@@ -13,4 +14,6 @@ public:
 
 private:
     std::unique_ptr<Window> window;
+    double deltaTime = 0.0f;
+    std::chrono::time_point<std::chrono::system_clock> startFrame;
 };
