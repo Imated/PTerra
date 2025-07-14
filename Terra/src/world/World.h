@@ -1,6 +1,10 @@
 #pragma once
+#include <memory>
+#include <unordered_map>
+
 #include "Chunk.h"
 #include "renderer/Renderer.h"
+#include "renderer/Shader.h"
 #include "renderer/Texture.h"
 
 namespace Terra {
@@ -14,11 +18,13 @@ public:
 
     Chunk generateChunk(glm::vec2 chunkPos);
 
+    void render();
+
 private:
     Texture tileAtlas;
-    Chunk loadedChunks[16][16];
+    std::pmr::vector<Chunk> loadedChunks;
     uint32_t seed = 0;
-    Renderer renderer;
+    Shader* defaultShader;
 };
 
 }

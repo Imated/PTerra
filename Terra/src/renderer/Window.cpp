@@ -2,6 +2,7 @@
 
 namespace Terra {
     static void windowSizeCallback(GLFWwindow* window, int width, int height);
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void errorCallback(int error, const char* description);
 
     Window::Window(int width, int height, const std::string& title)
@@ -41,6 +42,7 @@ namespace Terra {
         DEBUG("Successfully Created Window.");
 
         glfwSetWindowSizeCallback(window, windowSizeCallback);
+        glfwSetKeyCallback(window, keyCallback);
 
         DEBUG("Successfully Initialized GLFW.");
 
@@ -74,6 +76,11 @@ namespace Terra {
     static void windowSizeCallback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
+    }
+
+    void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
     static void errorCallback(int error, const char* description)

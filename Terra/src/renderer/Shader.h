@@ -15,6 +15,7 @@ namespace Terra {
         void setVector3(const char* name, GLfloat x, GLfloat y, GLfloat z) const;
         void setVector2(const char* name, GLfloat x, GLfloat y) const;
         void setFloat(const char* name, float value) const;
+        void setInt(const char* name, int value) const;
         void setBool(const char* name, bool value) const;
 
         void activate() const;

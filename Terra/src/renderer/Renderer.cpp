@@ -12,8 +12,8 @@ namespace Terra {
     {
         ShaderLibrary::load("default",
         {
-            { Vertex, "resources/default.vert"},
-            { Fragment, "resources/default.frag" }
+            { Vertex, RESOURCES_PATH "default.vert"},
+            { Fragment, RESOURCES_PATH "default.frag" }
         });
 
         glDisable(GL_DEPTH_TEST);
@@ -34,10 +34,10 @@ namespace Terra {
         {
             GLuint EBO;
 
-            constexpr auto topLeft = glm::vec2(0, 0);
-            const auto topRight = glm::vec2(0 + width, 0);
-            const auto bottomLeft = glm::vec2(0, 0 + height);
-            const auto bottomRight = glm::vec2(0 + width, 0 + height);
+            const auto topLeft = glm::vec2(0, height);
+            const auto topRight = glm::vec2(0 + width, 0 + height);
+            constexpr auto bottomLeft = glm::vec2(0, 0);
+            const auto bottomRight = glm::vec2(0 + width, 0);
 
             GLfloat vertices[] =
             {

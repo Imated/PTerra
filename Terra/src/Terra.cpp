@@ -10,7 +10,7 @@ namespace Terra
 
     void Terra::init()
     {
-        glClearColor(0.3f, 0.65f, 1.f, 1.f);
+        //glClearColor(0.3f, 0.65f, 1.f, 1.f);
         glfwSwapInterval(0);
         world->generateChunks();
     }
@@ -28,11 +28,13 @@ namespace Terra
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT);
 
+            world->render();
+
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
-            DEBUG("FPS: %f", 1/deltaTime);
+            //DEBUG("FPS: %f ", 1/deltaTime);
         }
     }
 }

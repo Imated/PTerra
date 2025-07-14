@@ -81,6 +81,11 @@ namespace Terra {
         glUniform1f(location, value);
     }
 
+    void Shader::setInt(const char *name, int value) const {
+        const int location = getUniformLocation(name);
+        glUniform1i(location, value);
+    }
+
     void Shader::setBool(const char* name, bool value) const
     {
         const int location = getUniformLocation(name);

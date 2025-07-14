@@ -6,14 +6,16 @@
 
 namespace Terra {
     struct Chunk {
-        glm::vec2 chunkPos {};
-        char tiles[16][16] {};
+        glm::ivec2 chunkPos {};
+        Tile tiles[16][16] {};
 
         Chunk() = default;
 
-        Chunk(glm::vec2 chunkPos, char tiles[16][16]) {
+        Chunk(glm::ivec2 chunkPos, Tile tilesIn[16][16]) {
             this->chunkPos = chunkPos;
-            std::memcpy(this->tiles, tiles, sizeof(this->tiles));;
+            for (int x = 0; x < 16; ++x)
+                for (int y = 0; y < 16; ++y)
+                    this->tiles[x][y] = tilesIn[x][y];
         }
     };
 }

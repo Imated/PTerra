@@ -1,12 +1,21 @@
 #pragma once
 #include <vector>
 
+#include "Registry.h"
 #include "glm/vec2.hpp"
 
 namespace Terra {
-    struct Tile {
-        char tileState;
-        std::vector<glm::vec2> frameLocations;
-        std::vector<glm::vec2> stateLocations;
+    struct TileData {
+        uint8_t startFrame;
+        uint8_t frameCount;
+        std::vector<uint8_t> stateLocations;
+    };
+
+    class Tile {
+        public:
+        Tile(uint8_t id = 0);
+        TileData* getTileData();
+        private:
+        uint8_t id;
     };
 }
