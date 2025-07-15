@@ -1,17 +1,27 @@
 ﻿#include "Terra.h"
 
+#include "misc/Random.h"
+#include "renderer/ShaderLibrary.h"
+
 namespace Terra
 {
     Terra::Terra()
     {
         window = std::make_unique<Window>(480, 256, "Terra");
+        ShaderLibrary::load("default",
+                    {
+                        {Vertex, RESOURCES_PATH "default.vert"},
+                        {Fragment, RESOURCES_PATH "default.frag"}
+                    });
         world = std::make_unique<World>();
     }
 
     void Terra::init()
     {
-        //glClearColor(0.3f, 0.65f, 1.f, 1.f);
-        glfwSwapInterval(0);
+        Registry::registerBaseItems();
+        Random::init();
+        Renderer::initialize();
+        glfwSwapInterval(1);
         world->generateChunks();
     }
 

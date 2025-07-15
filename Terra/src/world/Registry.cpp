@@ -19,7 +19,7 @@ namespace Terra {
     }
 
     void Registry::registerTile(const TileData& tile) {
-        uint8_t newID = static_cast<uint8_t>(tileRegistry.size());
+        auto newID = static_cast<uint8_t>(tileRegistry.size());
         tileRegistry[newID] = tile;
     }
 

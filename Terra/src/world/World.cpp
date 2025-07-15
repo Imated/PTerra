@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Registry.h"
+#include "misc/Logger.h"
+#include "misc/Random.h"
 
 namespace Terra {
 
@@ -17,13 +19,11 @@ namespace Terra {
     constexpr int TILE_WIDTH = 16;
     constexpr int TILE_HEIGHT = 16;
     constexpr int MAX_CHUNKS_X = 4;
-    constexpr int MAX_CHUNKS_Y = 2;
+    constexpr int MAX_CHUNKS_Y = 3;
 
     World::World(): tileAtlas(RESOURCES_PATH "tileAtlas.png") {
-        srand(time(NULL));
-        seed = rand();
-        Renderer::initialize();
-        Registry::registerBaseItems();
+        seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
+        DEBUG("Random seed: %i", seed);
         defaultShader = ShaderLibrary::get("default").get();
         loadedChunks.resize(MAX_CHUNKS_X * MAX_CHUNKS_Y);
     }

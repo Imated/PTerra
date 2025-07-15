@@ -23,7 +23,7 @@ public:
 private:
     Texture tileAtlas;
     std::pmr::vector<Chunk> loadedChunks;
-    uint32_t seed = 0;
+    int32_t seed = 0;
     Shader* defaultShader;
 };
 

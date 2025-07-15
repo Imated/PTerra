@@ -10,12 +10,6 @@ namespace Terra {
 
     void Renderer::initialize()
     {
-        ShaderLibrary::load("default",
-        {
-            { Vertex, RESOURCES_PATH "default.vert"},
-            { Fragment, RESOURCES_PATH "default.frag" }
-        });
-
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 

@@ -37,6 +37,8 @@ add_executable("${CMAKE_PROJECT_NAME}"
 		src/world/Registry.cpp
 		src/world/Registry.h
 		src/world/Tile.cpp
+		src/misc/Random.cpp
+		src/misc/Random.h
 )
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 17)
