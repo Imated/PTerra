@@ -16,8 +16,8 @@ namespace Terra {
             GLint getHeight() const { return height; }
         private:
             GLuint handle = 0;
-            GLint width;
-            GLint height;
+            GLint width {};
+            GLint height {};
             unsigned char* data;
     };
 }
