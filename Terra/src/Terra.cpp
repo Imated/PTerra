@@ -14,7 +14,7 @@ namespace Terra
 
     void Terra::init()
     {
-        Renderer::initialize();
+        Renderer::initialize(window.get());
         Registry::registerBaseItems();
         glfwSwapInterval(0);
         world->generateChunks();
@@ -32,6 +32,20 @@ namespace Terra
         {
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT);
+
+            glm::vec2 direction = glm::vec2(0);
+
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_D))
+                direction = glm::vec2(1.0f, direction.y);
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_A))
+                direction = glm::vec2(-1.0f, direction.y);
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_W))
+                direction = glm::vec2(direction.x, 1.0f);
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_S))
+                direction = glm::vec2(direction.x, -1.0f);
+            if (direction != glm::vec2(0.0f))
+                direction = glm::normalize(direction);
+            Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * glm::vec2(8));
 
             world->render();
 

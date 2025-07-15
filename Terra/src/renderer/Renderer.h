@@ -1,4 +1,7 @@
 #pragma once
+#include <memory>
+
+#include "Camera.h"
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
@@ -8,12 +11,13 @@ namespace Terra {
     public:
         ~Renderer();
 
-        static void initialize();
+        static void initialize(Window *window);
         static void renderQuad(float width, float height);
-        static void setClearColor(const glm::vec4& color);
+        static Camera* getCamera();
 
     private:
-        static GLuint quadVAO;
-        static GLuint quadVBO;
+        static inline GLuint quadVAO;
+        static inline GLuint quadVBO;
+        static inline std::unique_ptr<Camera> camera;
     };
 }

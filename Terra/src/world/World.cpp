@@ -72,8 +72,6 @@ namespace Terra {
     }
 
     void World::render() {
-        float halfW = 1920 / (4.0f);
-        float halfH = 1080 / (4.0f);
         auto shaderPtr = ShaderLibrary::get("default");
         if (!shaderPtr) {
             ERR("Shader 'default' not loaded!");
@@ -96,8 +94,8 @@ namespace Terra {
                         (chunk.chunkPos.y * CHUNK_HEIGHT + y) * TILE_HEIGHT
                     ) + offset;
 
-                    glm::mat4 mvp = glm::ortho(-halfW, halfW, -halfH, halfH, -1.0f, 1.0f)
-                                    * glm::translate(glm::mat4(1.0f), glm::vec3(tilePos, 0.0f));
+                    glm::mat4 mvp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix()
+                    * glm::translate(glm::mat4(1.0f), glm::vec3(tilePos, 0.0f));
                     defaultShader->setMatrix4x4("mvp", value_ptr(mvp));
 
                     defaultShader->setInt("tileID", chunk.tiles[x][y].getTileData()->startFrame);

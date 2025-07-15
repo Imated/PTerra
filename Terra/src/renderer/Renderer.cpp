@@ -5,10 +5,8 @@
 #include "ShaderLibrary.h"
 
 namespace Terra {
-    GLuint Renderer::quadVAO;
-    GLuint Renderer::quadVBO;
 
-    void Renderer::initialize()
+    void Renderer::initialize(Window* window)
     {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -21,6 +19,7 @@ namespace Terra {
                                 {Vertex, RESOURCES_PATH "default.vert"},
                                 {Fragment, RESOURCES_PATH "default.frag"}
                             });
+        camera = std::make_unique<Camera>(Camera(window, 4));
     }
 
     Renderer::~Renderer()
@@ -78,4 +77,7 @@ namespace Terra {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
+    Camera* Renderer::getCamera() {
+        return camera.get();
+    }
 }

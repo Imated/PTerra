@@ -39,6 +39,8 @@ add_executable("${CMAKE_PROJECT_NAME}"
 		src/world/Tile.cpp
 		src/misc/Random.cpp
 		src/misc/Random.h
+		src/renderer/Camera.cpp
+		src/renderer/Camera.h
 )
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 17)
