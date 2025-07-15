@@ -7,21 +7,16 @@ namespace Terra
 {
     Terra::Terra()
     {
+        Random::init();
         window = std::make_unique<Window>(480, 256, "Terra");
-        ShaderLibrary::load("default",
-                    {
-                        {Vertex, RESOURCES_PATH "default.vert"},
-                        {Fragment, RESOURCES_PATH "default.frag"}
-                    });
         world = std::make_unique<World>();
     }
 
     void Terra::init()
     {
-        Registry::registerBaseItems();
-        Random::init();
         Renderer::initialize();
-        glfwSwapInterval(1);
+        Registry::registerBaseItems();
+        glfwSwapInterval(0);
         world->generateChunks();
     }
 
@@ -44,7 +39,7 @@ namespace Terra
             glfwPollEvents();
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
-            DEBUGN("\rFPS: %f ", 1/deltaTime);
+            //std::cout << "\rFPS: " + static_cast<char>(1 / deltaTime) << std::flush;
         }
     }
 }

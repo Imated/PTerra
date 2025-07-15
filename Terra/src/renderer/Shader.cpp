@@ -44,7 +44,7 @@ namespace Terra {
         const int location = glGetUniformLocation(shaderID, name);
         if (location == -1)
         {
-            std::string msg = "Could not find uniform variable with name of '" + std::string(name) + "'! Not loading shader...";
+            std::string msg = "Could not find uniform variable with name of '" + std::string(name) + "'!";
             const char* warningLog = msg.c_str();
             WARN(warningLog);
         }

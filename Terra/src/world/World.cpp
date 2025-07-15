@@ -24,7 +24,6 @@ namespace Terra {
     World::World(): tileAtlas(RESOURCES_PATH "tileAtlas.png") {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
         DEBUG("Random seed: %i", seed);
-        defaultShader = ShaderLibrary::get("default").get();
         loadedChunks.resize(MAX_CHUNKS_X * MAX_CHUNKS_Y);
     }
 
@@ -75,6 +74,12 @@ namespace Terra {
     void World::render() {
         float halfW = 1920 / (4.0f);
         float halfH = 1080 / (4.0f);
+        auto shaderPtr = ShaderLibrary::get("default");
+        if (!shaderPtr) {
+            ERR("Shader 'default' not loaded!");
+            return;
+        }
+        defaultShader = shaderPtr.get();
         defaultShader->activate();
         tileAtlas.bind();
 

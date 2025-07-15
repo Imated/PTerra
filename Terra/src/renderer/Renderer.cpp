@@ -15,6 +15,12 @@ namespace Terra {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        ShaderLibrary::load("default",
+                            {
+                                {Vertex, RESOURCES_PATH "default.vert"},
+                                {Fragment, RESOURCES_PATH "default.frag"}
+                            });
     }
 
     Renderer::~Renderer()
