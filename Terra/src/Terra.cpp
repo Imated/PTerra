@@ -44,7 +44,7 @@ namespace Terra
             glfwPollEvents();
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
-            //DEBUG("FPS: %f ", 1/deltaTime);
+            DEBUGN("\rFPS: %f ", 1/deltaTime);
         }
     }
 }

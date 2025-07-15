@@ -13,7 +13,8 @@
 #define TRACE(msg, ...) Logger::Log(msg, TRACE, ##__VA_ARGS__)
 
 #ifndef NDEBUG
-#define DEBUG(msg, ...) Logger::Log(msg, DEBUG, ##__VA_ARGS__)
+#define DEBUGN(msg, ...) Logger::Log(msg, DEBUG, false, ##__VA_ARGS__)
+#define DEBUG(msg, ...) Logger::Log(msg, DEBUG, true, ##__VA_ARGS__)
 #else
 #define DEBUG(msg, ...)
 #endif
@@ -32,6 +33,7 @@ enum
 class Logger
 {
 public:
+    static void Log(const char *message, unsigned char color, bool newLine, ...);
     static void Log(const char* message, unsigned char color, ...);
     static void Log(const char* message, ...);
 };

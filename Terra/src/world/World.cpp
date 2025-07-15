@@ -41,13 +41,30 @@ namespace Terra {
 
     Chunk World::generateChunk(glm::vec2 chunkPos) {
         Tile chunkArray[16][16] {};
-        for (auto& x : chunkArray) {
-            for (auto& y : x) {
-                y = Tile(0);
+        for (int x = 0; x < 16; ++x) {
+            for (int y = 0; y < 16; ++y) {
+                if (x == 0 && y == 15)
+                    chunkArray[x][y] = Tile(2); // top-left
+                else if (x == 15 && y == 15)
+                    chunkArray[x][y] = Tile(3); // top-right
+                else if (x == 0 && y == 0)
+                    chunkArray[x][y] = Tile(9); // bottom-left
+                else if (x == 15 && y == 0)
+                    chunkArray[x][y] = Tile(8); // bottom-right
+                else if (y == 15)
+                    chunkArray[x][y] = Tile(4); // top edge
+                else if (y == 0)
+                    chunkArray[x][y] = Tile(7); // bottom edge
+                else if (x == 0)
+                    chunkArray[x][y] = Tile(5); // left edge
+                else if (x == 15)
+                    chunkArray[x][y] = Tile(6); // right edge
+                else
+                    chunkArray[x][y] = Tile(1); // center
             }
         }
 
-        chunkArray[8][8] = Tile(1);
+        //chunkArray[8][8] = Tile(1);
 
         return Chunk {
             chunkPos,
