@@ -71,6 +71,7 @@ namespace Terra {
         };
     }
 
+    #pragma optimize(...)
     void World::render() {
         auto shaderPtr = ShaderLibrary::get("default");
         if (!shaderPtr) {
@@ -80,6 +81,8 @@ namespace Terra {
         defaultShader = shaderPtr.get();
         defaultShader->activate();
         tileAtlas.bind();
+
+        glm::mat4 vp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix();
 
         for (Chunk& chunk: loadedChunks) {
             for (int x = 0; x < CHUNK_WIDTH; ++x) {
@@ -94,8 +97,7 @@ namespace Terra {
                         (chunk.chunkPos.y * CHUNK_HEIGHT + y) * TILE_HEIGHT
                     ) + offset;
 
-                    glm::mat4 mvp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix()
-                    * glm::translate(glm::mat4(1.0f), glm::vec3(tilePos, 0.0f));
+                    auto mvp = glm::translate(vp, glm::vec3(tilePos, 0.0f));
                     defaultShader->setMatrix4x4("mvp", value_ptr(mvp));
 
                     defaultShader->setInt("tileID", chunk.tiles[x][y].getTileData()->startFrame);
