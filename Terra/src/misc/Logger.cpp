@@ -13,7 +13,7 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
     void log_inner(const char* message, unsigned char color, bool newLine, va_list args) {
         const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         static unsigned char levels[6] = { 64, 4, 6, 2, 1, 8 };
-        if (color >= sizeof(level_colors)) {
+        if (color >= sizeof(levels)) {
             color = ERROR;
         }
         SetConsoleTextAttribute(consoleHandle, levels[color]);
@@ -21,7 +21,7 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
         vsnprintf(buffer, sizeof(buffer), message, args);
         const LPDWORD numWritten = nullptr;
         WriteConsoleA(consoleHandle, buffer, static_cast<DWORD>(strlen(buffer)), numWritten, nullptr);
-        if (newline)
+        if (newLine)
             WriteConsoleA(consoleHandle, "\n", 1, numWritten, nullptr);
         else
             WriteConsoleA(consoleHandle, "\r                    \r", 22, nullptr, nullptr);
@@ -61,7 +61,7 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
 
 // TODO: passing one byte objects before varargs technically leads to undefined behavior here.
 
-void Logger::Log(const char* message, unsigned char color, bool newLine, ...)
+void Logger::log(const char* message, unsigned char color, bool newLine, ...)
 {
     va_list args;
     va_start(args, newLine);
@@ -69,7 +69,7 @@ void Logger::Log(const char* message, unsigned char color, bool newLine, ...)
     va_end(args);
 }
 
-void Logger::Log(const char* message, unsigned char color, ...)
+void Logger::log(const char* message, unsigned char color, ...)
 {
     va_list args;
     va_start(args, color);
@@ -77,7 +77,7 @@ void Logger::Log(const char* message, unsigned char color, ...)
     va_end(args);
 }
     
-void Logger::Log(const char* message, ...)
+void Logger::log(const char* message, ...)
 {
     va_list args;
     va_start(args, message);
