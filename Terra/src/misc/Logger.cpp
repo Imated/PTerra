@@ -30,6 +30,8 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
 
 #elif TARGET_OS_UNIX
 
+    // In theory, this implementation should work with pretty much any ANSI-compatible terminal,
+    // which includes many non-unix terminals.
     void log_inner(const char* message, unsigned char color, bool newline, va_list args) {
         const unsigned char level_colors[] = {
             44, // Assertion: Blue background
@@ -55,9 +57,9 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
         else
             printf("\r                    \r");
     }
-
-
 #endif
+
+// TODO: passing one byte objects before varargs technically leads to undefined behavior here.
 
 void Logger::Log(const char* message, unsigned char color, bool newLine, ...)
 {
