@@ -1,4 +1,7 @@
 ﻿#include "Shader.h"
+
+#include <vector>
+
 #include "misc/Utility.h"
 
 namespace Terra {
@@ -39,9 +42,15 @@ namespace Terra {
     }
 
     #pragma region Shader Attributes
-    int Shader::getUniformLocation(const char* name) const
+    int Shader::getUniformLocation(const char* name)
     {
-        const int location = glGetUniformLocation(shaderID, name);
+        int location = 0;
+        if (cachedUniformLocations.find(name) != cachedUniformLocations.end())
+            location = cachedUniformLocations.at(name);
+        else {
+            location = glGetUniformLocation(shaderID, name);
+            cachedUniformLocations[name] = location;
+        }
         if (location == -1)
         {
             std::string msg = "Could not find uniform variable with name of '" + std::string(name) + "'!";
@@ -51,42 +60,43 @@ namespace Terra {
         return location;
     }
 
-    void Shader::setMatrix4x4(const char* name, const float* matrix) const
+    void Shader::setMatrix4x4(const char* name, const float* matrix)
     {
         const int location = getUniformLocation(name);
         glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
     }
 
-    void Shader::setVector4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const
+    void Shader::setVector4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
     {
         const int location = getUniformLocation(name);
         glUniform4f(location, x, y, z, w);
     }
 
-    void Shader::setVector3(const char* name, GLfloat x, GLfloat y, GLfloat z) const
+    void Shader::setVector3(const char* name, GLfloat x, GLfloat y, GLfloat z)
     {
         const int location = getUniformLocation(name);
         glUniform3f(location, x, y, z);
     }
 
-    void Shader::setVector2(const char* name, GLfloat x, GLfloat y) const
+    void Shader::setVector2(const char* name, GLfloat x, GLfloat y)
     {
         const int location = getUniformLocation(name);
         glUniform2f(location, x, y);
     }
 
-    void Shader::setFloat(const char* name, float value) const
+    void Shader::setFloat(const char* name, float value)
     {
         const int location = getUniformLocation(name);
         glUniform1f(location, value);
     }
 
-    void Shader::setInt(const char *name, int value) const {
+    void Shader::setInt(const char *name, int value)
+    {
         const int location = getUniformLocation(name);
         glUniform1i(location, value);
     }
 
-    void Shader::setBool(const char* name, bool value) const
+    void Shader::setBool(const char* name, bool value)
     {
         const int location = getUniformLocation(name);
         glUniform1i(location, value);
