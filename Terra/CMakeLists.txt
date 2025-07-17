@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 
 option(PRODUCTION_BUILD "Make this a production build" OFF)
 
+# Emit compile_commands.json
+# This allows certain IDE tools to better understand the project.
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
 
