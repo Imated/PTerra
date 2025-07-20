@@ -26,6 +26,9 @@ namespace Terra
         gameLoop();
     }
 
+    double totalTime = 0.0;
+    int frameCount = 0;
+
     void Terra::gameLoop()
     {
         while (!glfwWindowShouldClose(window->getWindow()))
@@ -53,7 +56,13 @@ namespace Terra
             glfwPollEvents();
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
-            //std::cout << "\rFPS: " + static_cast<char>(1 / deltaTime) << std::flush;
+
+            totalTime += deltaTime;
+            frameCount++;
+
+            double avgFPS = frameCount / totalTime;
+
+            std::cout << "\rFPS: " << avgFPS << "          ";
         }
     }
 }
