@@ -16,7 +16,8 @@ namespace Terra
     {
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
-        glfwSwapInterval(0);
+        glfwSwapInterval(1);
+        world->init();
         world->generateChunks();
     }
 
@@ -62,7 +63,7 @@ namespace Terra
 
             double avgFPS = frameCount / totalTime;
 
-            std::cout << "\rFPS: " << avgFPS << "          ";
+            //std::cout << "\rFPS: " << avgFPS << "          ";
         }
     }
 }

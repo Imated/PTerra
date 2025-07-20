@@ -2,7 +2,9 @@
 #include <cstring>
 
 #include "Tile.h"
+#include "glm/fwd.hpp"
 #include "glm/vec2.hpp"
+#include "renderer/Shader.h"
 
 namespace Terra {
     struct Chunk {
@@ -17,5 +19,7 @@ namespace Terra {
                 for (int y = 0; y < 16; ++y)
                     this->tiles[x][y] = tilesIn[x][y];
         }
+
+        void render(glm::mat4 vp, Shader* shader);
     };
 }

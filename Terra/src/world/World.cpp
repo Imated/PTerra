@@ -8,18 +8,13 @@
 #include "renderer/ShaderLibrary.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Registry.h"
 #include "misc/Logger.h"
 #include "misc/Random.h"
+#include "misc/Constants.h"
 
 namespace Terra {
 
-    constexpr int CHUNK_WIDTH = 16;
-    constexpr int CHUNK_HEIGHT = 16;
-    constexpr int TILE_WIDTH = 16;
-    constexpr int TILE_HEIGHT = 16;
-    constexpr int MAX_CHUNKS_X = 4;
-    constexpr int MAX_CHUNKS_Y = 3;
+
 
     World::World(): tileAtlas(RESOURCES_PATH "tileAtlas.png") {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
@@ -28,6 +23,18 @@ namespace Terra {
     }
 
     World::~World() = default;
+
+    void World::init() {
+        auto shaderPtr = ShaderLibrary::get("default");
+        if (!shaderPtr) {
+            ERR("Shader 'default' not loaded!");
+            return;
+        }
+
+        defaultShader = shaderPtr.get();
+        defaultShader->activate();
+        tileAtlas.bind();
+    }
 
     void World::generateChunks() {
         int index = 0;
@@ -73,38 +80,10 @@ namespace Terra {
 
     #pragma optimize(...)
     void World::render() {
-        auto shaderPtr = ShaderLibrary::get("default");
-        if (!shaderPtr) {
-            ERR("Shader 'default' not loaded!");
-            return;
-        }
-        defaultShader = shaderPtr.get();
-        defaultShader->activate();
-        tileAtlas.bind();
-
         glm::mat4 vp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix();
 
         for (Chunk& chunk: loadedChunks) {
-            for (int x = 0; x < CHUNK_WIDTH; ++x) {
-                for (int y = 0; y < CHUNK_HEIGHT; ++y) {
-                    glm::vec2 offset = glm::vec2(
-                        -MAX_CHUNKS_X * CHUNK_WIDTH * TILE_WIDTH / 2.0f,
-                        -MAX_CHUNKS_Y * CHUNK_HEIGHT * TILE_HEIGHT / 2.0f
-                    );
-
-                    glm::vec2 tilePos = glm::vec2(
-                        (chunk.chunkPos.x * CHUNK_WIDTH + x) * TILE_WIDTH,
-                        (chunk.chunkPos.y * CHUNK_HEIGHT + y) * TILE_HEIGHT
-                    ) + offset;
-
-                    auto mvp = glm::translate(vp, glm::vec3(tilePos, 0.0f));
-                    defaultShader->setMatrix4x4("mvp", value_ptr(mvp));
-
-                    defaultShader->setInt("tileID", chunk.tiles[x][y].getTileData()->startFrame);
-
-                    Renderer::renderQuad(TILE_WIDTH, TILE_HEIGHT);
-                }
-            }
+            chunk.render(vp, defaultShader);
         }
     }
 }

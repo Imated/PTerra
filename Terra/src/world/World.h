@@ -14,6 +14,8 @@ public:
     World();
     ~World();
 
+    void init();
+
     void generateChunks();
 
     Chunk generateChunk(glm::vec2 chunkPos);
