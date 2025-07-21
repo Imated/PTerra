@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <unordered_map>
 #include "glad/glad.h"
+#include "glm/vec2.hpp"
 
 namespace Terra {
     class Shader
@@ -17,6 +18,8 @@ namespace Terra {
         void setFloat(const char* name, float value);
         void setInt(const char* name, int value);
         void setBool(const char* name, bool value);
+        void setUIntArray(const char *name, GLsizei count, uint32_t* value);
+        void setUVec2Array(const char *name, GLsizei count, glm::uvec2* value);
 
         void activate() const;
         void del() const;

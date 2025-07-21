@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include <string>
+#include <thread>
 
 #include "ShaderLibrary.h"
 

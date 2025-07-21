@@ -1,7 +1,9 @@
 ﻿#include "Shader.h"
 
+#include <math.h>
 #include <vector>
 
+#include "glm/gtc/type_ptr.inl"
 #include "misc/Utility.h"
 
 namespace Terra {
@@ -101,7 +103,19 @@ namespace Terra {
         const int location = getUniformLocation(name);
         glUniform1i(location, value);
     }
-    #pragma endregion
+
+    void Shader::setUIntArray(const char *name, GLsizei count, uint32_t *value) {
+        const int location = getUniformLocation(name);
+        glUniform1uiv(location, count, value);
+    }
+
+    void Shader::setUVec2Array(const char *name, GLsizei count, glm::uvec2 *value) {
+        const int location = getUniformLocation(name);
+        glUniform2uiv(location, count, glm::value_ptr(value[0]));
+    }
+
+
+#pragma endregion
 
     void Shader::activate() const
     {

@@ -7,23 +7,35 @@
 
 namespace Terra {
     void Chunk::render(glm::mat4 vp, Shader* shader) {
+
+        std::vector<glm::uvec2> tilePositions;
+        std::vector<glm::uint32_t> tileFrames;
+
+        tilePositions.resize(CHUNK_WIDTH * CHUNK_HEIGHT);
+        tileFrames.resize(CHUNK_WIDTH * CHUNK_HEIGHT);
+
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
-                glm::vec2 offset = glm::vec2(
-                    -MAX_CHUNKS_X * CHUNK_WIDTH * TILE_WIDTH / 2.0f,
-                    -MAX_CHUNKS_Y * CHUNK_HEIGHT * TILE_HEIGHT / 2.0f
-                );
-
-                glm::vec2 tilePos = glm::vec2(
-                    (chunkPos.x * CHUNK_WIDTH + x) * TILE_WIDTH,
-                    (chunkPos.y * CHUNK_HEIGHT + y) * TILE_HEIGHT
-                ) + offset;
-
-                auto mvp = glm::translate(vp, glm::vec3(tilePos, 0.0f));
-                shader->setMatrix4x4("mvp", value_ptr(mvp));
-                shader->setInt("tileID", tiles[x][y].getTileData()->startFrame);
-                Renderer::renderQuad(TILE_WIDTH, TILE_HEIGHT);
+                tilePositions[x + y * CHUNK_WIDTH] = glm::uvec2{ x, y };
+                tileFrames[x + y * CHUNK_WIDTH] = tiles[x][y].getTileData()->startFrame;
             }
         }
+
+        glm::vec2 tilePos = glm::vec2(
+             (chunkPos.x * CHUNK_WIDTH) * TILE_WIDTH,
+             (chunkPos.y * CHUNK_HEIGHT) * TILE_HEIGHT
+         );
+        glm::vec2 offset = glm::vec2(
+            -MAX_CHUNKS_X * CHUNK_WIDTH * TILE_WIDTH / 2.0f,
+            -MAX_CHUNKS_Y * CHUNK_HEIGHT * TILE_HEIGHT / 2.0f
+        );
+
+        auto mvp = glm::translate(vp, glm::vec3(tilePos + offset, 0.f));
+        shader->setMatrix4x4("mvp", value_ptr(mvp));
+        shader->setUVec2Array("tilePositions", 256, tilePositions.data());
+        shader->setUIntArray("tileFrames", 256, tileFrames.data());
+        //shader->setInt("tileID", tiles[0][0].getTileData()->startFrame);
+
+        Renderer::renderQuad(TILE_WIDTH * CHUNK_WIDTH, TILE_HEIGHT * CHUNK_HEIGHT);
     }
 }

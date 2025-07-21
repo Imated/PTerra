@@ -78,7 +78,6 @@ namespace Terra {
         };
     }
 
-    #pragma optimize(...)
     void World::render() {
         glm::mat4 vp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix();
 
