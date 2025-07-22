@@ -25,7 +25,7 @@ namespace Terra {
             -MAX_CHUNKS_Y * CHUNK_HEIGHT * TILE_HEIGHT / 2.0f
         );
 
-        auto mvp = glm::translate(vp, glm::vec3(tilePos + offset, 0.f));
+        auto mvp = glm::translate(vp, glm::vec3(tilePos + glm::vec2(-960, -540), 0.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         shader->setUIntArray("tileFrames", 256, tileFrames.data());
         //shader->setInt("tileID", tiles[0][0].getTileData()->startFrame);

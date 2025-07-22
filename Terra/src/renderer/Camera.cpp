@@ -10,7 +10,7 @@ namespace Terra {
 
     glm::mat4x4 Camera::getViewMatrix() {
         glm::mat4x4 view = glm::mat4x4(1.0f);
-        view = glm::translate(view, glm::vec3(-cameraPos / glm::vec2(8 * zoom), 0));
+        view = glm::translate(view, glm::vec3(-cameraPos, 0));
         return view;
     }
 

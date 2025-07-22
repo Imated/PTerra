@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-option(PRODUCTION_BUILD "Make this a production build" OFF)
+option(PRODUCTION_BUILD "Make this a production build" ON)
 
 # Emit compile_commands.json
 # This allows certain IDE tools to better understand the project.
@@ -42,9 +42,15 @@ target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC GLFW_INCLUDE_NONE=1)
 
 if(PRODUCTION_BUILD)
 	# setup the ASSETS_PATH macro to be in the root folder of your exe
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./resources/") 
+	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH=\"resources/\")
+	#target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./resources/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1) 
-	set(CMAKE_CXX_FLAGS "-O2 -march=native -std=c++11 -Wall")# release mode 
+	set(CMAKE_CXX_FLAGS "-O2 -march=native -std=c++11 -Wall")# release mode
+	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_SOURCE_DIR}/resources
+			$<TARGET_FILE_DIR:terra>/resources
+	)
 else()
 	# This is useful to get an ASSETS_PATH in your IDE during development
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
