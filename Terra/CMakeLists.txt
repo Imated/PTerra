@@ -21,6 +21,12 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+set(THREADS_PREFER_PTHREAD_FLAG OFF CACHE BOOL "" FORCE)
+set(CMAKE_THREAD_LIBS_INIT "-lwinpthread" CACHE STRING "" FORCE)
+set(Threads_FOUND TRUE CACHE BOOL "" FORCE)
+set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_X11     OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(libs/glfw)
 add_subdirectory(libs/glad)
@@ -28,26 +34,7 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}"
-		src/world/Chunk.h
-		src/world/World.cpp
-		src/world/World.h
-		src/world/Tile.h
-		src/renderer/Texture.cpp
-		src/renderer/Texture.h
-		src/renderer/Renderer.cpp
-		src/renderer/Renderer.h
-		src/renderer/Shader.cpp
-		src/world/Registry.cpp
-		src/world/Registry.h
-		src/world/Tile.cpp
-		src/misc/Random.cpp
-		src/misc/Random.h
-		src/renderer/Camera.cpp
-		src/renderer/Camera.h
-		src/world/Chunk.cpp
-		src/misc/Constants.h
-)
+add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}" "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc")
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 
