@@ -16,6 +16,11 @@ public:
 
     void init();
 
+    void loadChunk(glm::ivec2 pos);
+    void unloadChunk(glm::ivec2 pos);
+
+    bool isChunkLoaded(glm::ivec2 chunkPos);
+    void updateChunks();
     void generateChunks();
 
     Chunk generateChunk(glm::vec2 chunkPos);
@@ -24,7 +29,7 @@ public:
 
 private:
     Texture tileAtlas;
-    std::pmr::vector<Chunk> loadedChunks;
+    std::vector<Chunk> loadedChunks;
     int32_t seed = 0;
     Shader* defaultShader;
 };

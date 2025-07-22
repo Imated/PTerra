@@ -11,6 +11,8 @@
 #include "misc/Logger.h"
 #include "misc/Random.h"
 #include "misc/Constants.h"
+#include <algorithm>
+#include <unordered_set>
 
 namespace Terra {
 
@@ -36,13 +38,43 @@ namespace Terra {
         tileAtlas.bind();
     }
 
-    void World::generateChunks() {
-        int index = 0;
-        for (int x = 0; x < MAX_CHUNKS_X; x++) {
-            for (int y = 0; y < MAX_CHUNKS_Y; y++) {
-                loadedChunks[index++] = generateChunk(glm::vec2(x, y));
+    void World::loadChunk(glm::ivec2 pos) {
+        loadedChunks.push_back(generateChunk(pos));
+    }
+
+    void World::unloadChunk(glm::ivec2 pos) {
+        const auto it = std::ranges::find_if(loadedChunks, [&](const Chunk &chunk) {
+            return chunk.chunkPos == pos;
+        });
+
+        if (it != loadedChunks.end()) {
+            loadedChunks.erase(it);
+        }
+    }
+
+    void World::updateChunks() {
+        glm::vec2 camPos = Renderer::getCamera()->getPosition();
+        glm::ivec2 camChunk = glm::ivec2(std::floor(camPos.x / CHUNK_WIDTH), std::floor(camPos.y / CHUNK_HEIGHT));
+
+        for (int x = -1; x <= MAX_CHUNKS_X; x++) {
+            for (int y = -1; y <= MAX_CHUNKS_Y; y++) {
+                const glm::ivec2 worldPos = camChunk + glm::ivec2(x, y);
+                if (!isChunkLoaded(worldPos))
+                    loadChunk(worldPos);
             }
         }
+    }
+
+    bool World::isChunkLoaded(glm::ivec2 pos) {
+        for (const Chunk& c : loadedChunks) {
+            if (c.chunkPos == pos)
+                return true;
+        }
+        return false;
+    }
+
+    void World::generateChunks() {
+        updateChunks();
     }
 
     Chunk World::generateChunk(glm::vec2 chunkPos) {

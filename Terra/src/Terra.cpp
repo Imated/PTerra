@@ -1,5 +1,6 @@
 ﻿#include "Terra.h"
 
+#include "misc/Constants.h"
 #include "misc/Random.h"
 #include "renderer/ShaderLibrary.h"
 
@@ -29,6 +30,8 @@ namespace Terra
 
     double totalTime = 0.0;
     int frameCount = 0;
+    glm::vec2 lastChunkPos = glm::vec2(0);
+    glm::vec2 currentChunkPos = glm::vec2(0);
 
     void Terra::gameLoop()
     {
@@ -49,7 +52,19 @@ namespace Terra
                 direction = glm::vec2(direction.x, -1.0f);
             if (direction != glm::vec2(0.0f))
                 direction = glm::normalize(direction);
-            Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * glm::vec2(8));
+            Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * glm::vec2(8.f));
+
+            lastChunkPos = currentChunkPos;
+            auto cam   = Renderer::getCamera();
+            auto p = cam->getPosition();
+            currentChunkPos = { int(p.x/CHUNK_WIDTH), int(p.y/CHUNK_WIDTH) };
+
+
+            std::cout << "camPos: " << p.x << ", " << p.y
+          << " | chunk: " << currentChunkPos.x << ", " << currentChunkPos.y << std::endl;
+
+            if (lastChunkPos != currentChunkPos)
+                world->updateChunks();
 
             world->render();
 
