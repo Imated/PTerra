@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.5)
 
 option(PRODUCTION_BUILD "Make this a production build" OFF)
 
@@ -34,7 +34,7 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}" "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc")
+add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}")
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 
