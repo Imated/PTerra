@@ -55,7 +55,7 @@ namespace Terra
             lastChunkPos = currentChunkPos;
             auto cam   = Renderer::getCamera();
             glm::vec2 worldTilePos = cam->getPosition();
-            currentChunkPos = { static_cast<int>((worldTilePos.x + 8.f) / CHUNK_WIDTH), static_cast<int>((worldTilePos.y + 8.f) / CHUNK_WIDTH) };
+            currentChunkPos = { std::floor(worldTilePos.x / CHUNK_WIDTH), std::floor(worldTilePos.y / CHUNK_WIDTH) };;
 
 
             std::cout << "camPos: " << worldTilePos.x << ", " << worldTilePos.y

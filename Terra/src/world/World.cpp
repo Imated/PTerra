@@ -54,13 +54,25 @@ namespace Terra {
 
     void World::updateChunks() {
         glm::vec2 camPos = Renderer::getCamera()->getPosition();
-        glm::ivec2 camChunk = { static_cast<int>((camPos.x + 8.f) / CHUNK_WIDTH), static_cast<int>((camPos.y + 8.f) / CHUNK_WIDTH) };
+        glm::ivec2 camChunk = { std::floor(camPos.x / CHUNK_WIDTH), std::floor(camPos.y / CHUNK_WIDTH) };
+
+        std::vector<glm::ivec2> chunkPosNeeded;
 
         for (int x = 0; x < MAX_CHUNKS_X; x++) {
             for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 const glm::ivec2 worldPos = camChunk + glm::ivec2(x, y);
                 if (!isChunkLoaded(worldPos))
                     loadChunk(worldPos);
+                chunkPosNeeded.emplace_back(worldPos);
+            }
+        }
+
+        for (auto chunk: loadedChunks) {
+            auto it = std::ranges::find_if(chunkPosNeeded, [&](const glm::ivec2 &chunkPos) {
+                return chunkPos == chunk.chunkPos;
+            });
+            if (it == chunkPosNeeded.end()) {
+                unloadChunk(chunk.chunkPos);
             }
         }
     }
