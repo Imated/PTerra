@@ -40,18 +40,20 @@ namespace Terra
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT);
 
-            glm::vec2 direction = glm::vec2(0);
+            auto direction = glm::vec2(0);
 
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_D))
-                direction = glm::vec2(1.0f, direction.y);
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_A))
-                direction = glm::vec2(-1.0f, direction.y);
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_W))
-                direction = glm::vec2(direction.x, 1.0f);
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_S))
-                direction = glm::vec2(direction.x, -1.0f);
-            if (direction != glm::vec2(0.0f))
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
+                direction.x += 1;
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
+                direction.x -= 1;
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
+                direction.y += 1;
+            if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
+                direction.y -= 1;
+
+            if (direction != glm::vec2(0.f))
                 direction = glm::normalize(direction);
+            
             auto camSpeed = 1.f;
             Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * camSpeed);
 
