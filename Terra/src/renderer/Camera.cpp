@@ -2,6 +2,7 @@
 
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#include "misc/Constants.h"
 
 namespace Terra {
     Camera::Camera(Window* window): windowSize(window->params), cameraPos() {}
@@ -16,15 +17,12 @@ namespace Terra {
 
     glm::mat4x4 Camera::getProjectionMatrix() {
         glm::mat4x4 projection = glm::mat4x4(1.0f);
-        float aspect = static_cast<float>(windowSize.width) / static_cast<float>(windowSize.height);
-        float horizontalTiles = 60.f / 2;
-        float verticalTiles = horizontalTiles / aspect;
-        projection = glm::ortho(-horizontalTiles, horizontalTiles, -verticalTiles, verticalTiles, -1.0f, 1.0f);
+        projection = glm::ortho(0.f, HORIZONTAL_TILES, 0.f, VERTICAL_TILES);
         return projection;
     }
 
     void Camera::setPosition(glm::vec2 position) {
-        this->cameraPos = position;
+        cameraPos = position;
     }
 
     glm::vec2 Camera::getPosition() {

@@ -53,14 +53,14 @@ namespace Terra
 
             if (direction != glm::vec2(0.f))
                 direction = glm::normalize(direction);
-            
-            auto camSpeed = 1.f;
+
+            auto camSpeed = 8.f;
             Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * camSpeed);
 
             lastChunkPos = currentChunkPos;
             auto cam   = Renderer::getCamera();
             glm::vec2 worldTilePos = cam->getPosition();
-            currentChunkPos = { static_cast<int>(worldTilePos.x / CHUNK_WIDTH), static_cast<int>(worldTilePos.y / CHUNK_WIDTH) };
+            currentChunkPos = { static_cast<int>((worldTilePos.x + 8.f) / CHUNK_WIDTH), static_cast<int>((worldTilePos.y + 8.f) / CHUNK_WIDTH) };
 
 
             std::cout << "camPos: " << worldTilePos.x << ", " << worldTilePos.y

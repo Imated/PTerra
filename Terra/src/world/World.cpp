@@ -54,10 +54,10 @@ namespace Terra {
 
     void World::updateChunks() {
         glm::vec2 camPos = Renderer::getCamera()->getPosition();
-        glm::ivec2 camChunk = glm::ivec2(std::floor(camPos.x / CHUNK_WIDTH), std::floor(camPos.y / CHUNK_HEIGHT));
+        glm::ivec2 camChunk = { static_cast<int>((camPos.x + 8.f) / CHUNK_WIDTH), static_cast<int>((camPos.y + 8.f) / CHUNK_WIDTH) };
 
-        for (int x = -1; x <= MAX_CHUNKS_X; x++) {
-            for (int y = -1; y <= MAX_CHUNKS_Y; y++) {
+        for (int x = 0; x < MAX_CHUNKS_X; x++) {
+            for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 const glm::ivec2 worldPos = camChunk + glm::ivec2(x, y);
                 if (!isChunkLoaded(worldPos))
                     loadChunk(worldPos);
@@ -111,7 +111,7 @@ namespace Terra {
     }
 
     void World::render() {
-        glm::mat4 vp = Renderer::getCamera()->getViewMatrix() * Renderer::getCamera()->getProjectionMatrix();
+        glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
 
         for (Chunk& chunk: loadedChunks) {
             chunk.render(vp, defaultShader);
