@@ -41,15 +41,10 @@ namespace Terra
             glClear(GL_COLOR_BUFFER_BIT);
 
             auto direction = glm::vec2(0);
-
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
-                direction.x += 1;
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
-                direction.x -= 1;
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
-                direction.y += 1;
-            if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
-                direction.y -= 1;
+            direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
+            direction.x -= glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS;
+            direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
+            direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
 
             if (direction != glm::vec2(0.f))
                 direction = glm::normalize(direction);
