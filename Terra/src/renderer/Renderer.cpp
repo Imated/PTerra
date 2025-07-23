@@ -20,7 +20,7 @@ namespace Terra {
                                 {Vertex, RESOURCES_PATH "default.vert"},
                                 {Fragment, RESOURCES_PATH "default.frag"}
                             });
-        camera = std::make_unique<Camera>(Camera(window, 1));
+        camera = std::make_unique<Camera>(Camera(window));
     }
 
     Renderer::~Renderer()

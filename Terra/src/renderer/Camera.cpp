@@ -4,7 +4,7 @@
 #include "glm/ext/matrix_transform.hpp"
 
 namespace Terra {
-    Camera::Camera(Window* window, uint8_t defaultZoom): windowSize(window->params), zoom(defaultZoom), cameraPos() {}
+    Camera::Camera(Window* window): windowSize(window->params), cameraPos() {}
 
     Camera::~Camera() {}
 
@@ -16,9 +16,10 @@ namespace Terra {
 
     glm::mat4x4 Camera::getProjectionMatrix() {
         glm::mat4x4 projection = glm::mat4x4(1.0f);
-        float halfW = windowSize.width / zoom;
-        float halfH = windowSize.height / zoom;
-        projection = glm::ortho(-halfW, halfW, -halfH, halfH, -1.0f, 1.0f);
+        float aspect = static_cast<float>(windowSize.width) / static_cast<float>(windowSize.height);
+        float horizontalTiles = 60.f / 2;
+        float verticalTiles = horizontalTiles / aspect;
+        projection = glm::ortho(-horizontalTiles, horizontalTiles, -verticalTiles, verticalTiles, -1.0f, 1.0f);
         return projection;
     }
 

@@ -17,19 +17,15 @@ namespace Terra {
         }
 
         glm::vec2 tilePos = glm::vec2(
-             (chunkPos.x * CHUNK_WIDTH) * TILE_WIDTH,
-             (chunkPos.y * CHUNK_HEIGHT) * TILE_HEIGHT
+             (chunkPos.x * CHUNK_WIDTH),
+             (chunkPos.y * CHUNK_HEIGHT)
          );
-        glm::vec2 offset = glm::vec2(
-            -MAX_CHUNKS_X * CHUNK_WIDTH * TILE_WIDTH / 2.0f,
-            -MAX_CHUNKS_Y * CHUNK_HEIGHT * TILE_HEIGHT / 2.0f
-        );
 
-        auto mvp = glm::translate(vp, glm::vec3(tilePos + glm::vec2(-960, -540), 0.f));
+        auto mvp = glm::translate(vp, glm::vec3(tilePos, 0.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         shader->setUIntArray("tileFrames", 256, tileFrames.data());
         //shader->setInt("tileID", tiles[0][0].getTileData()->startFrame);
 
-        Renderer::renderQuad(TILE_WIDTH * CHUNK_WIDTH, TILE_HEIGHT * CHUNK_HEIGHT);
+        Renderer::renderQuad(CHUNK_WIDTH, CHUNK_HEIGHT);
     }
 }

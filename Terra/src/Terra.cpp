@@ -53,7 +53,6 @@ namespace Terra
             if (direction != glm::vec2(0.0f))
                 direction = glm::normalize(direction);
             auto camSpeed = 1.f;
-            auto aspectRatio = window->params.width / window->params.height;
             Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * camSpeed);
 
             lastChunkPos = currentChunkPos;

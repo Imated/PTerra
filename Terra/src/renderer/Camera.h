@@ -5,7 +5,7 @@
 namespace Terra {
 class Camera {
     public:
-    Camera(Window *window, uint8_t defaultZoom);
+    Camera(Window *window);
     ~Camera();
 
     glm::mat4x4 getViewMatrix();
@@ -15,7 +15,6 @@ class Camera {
 
     private:
     Window::WindowParams windowSize;
-    uint8_t zoom;
     glm::vec2 cameraPos;
 };
 }
