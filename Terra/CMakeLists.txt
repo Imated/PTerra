@@ -34,11 +34,7 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}"
-		src/entity/Entity.h
-		src/entity/Entity.cpp
-		src/entity/Player.cpp
-		src/entity/Player.h)
+add_executable("${CMAKE_PROJECT_NAME}" ${MY_SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc")
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 
@@ -50,13 +46,15 @@ if(PRODUCTION_BUILD)
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
-			$<TARGET_FILE_DIR:terra>/resources
-	)
+			$<TARGET_FILE_DIR:terra>/resources)
 else()
 	# This is useful to get an ASSETS_PATH in your IDE during development
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0) 
 	set(CMAKE_CXX_FLAGS "-g")# Debug mode
+	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_SOURCE_DIR}/resources
+			$<TARGET_FILE_DIR:terra>/resources)
 endif()
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
