@@ -17,7 +17,7 @@
 #include "renderer/Camera.h"
 
 namespace Terra {
-    World::World(): tileAtlas(RESOURCES_PATH "tileAtlas.png") {
+    World::World(): tileAtlas("resources/tileAtlas.png") {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
         DEBUG("Random seed: %i", seed);
         loadedChunks.resize(MAX_CHUNKS_X * MAX_CHUNKS_Y);

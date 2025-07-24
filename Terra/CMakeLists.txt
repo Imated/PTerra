@@ -45,9 +45,6 @@ set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC GLFW_INCLUDE_NONE=1) 
 
 if(PRODUCTION_BUILD)
-	# setup the ASSETS_PATH macro to be in the root folder of your exe
-	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH=\"resources/\")
-	#target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./resources/")
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1) 
 	set(CMAKE_CXX_FLAGS "-O2 -march=native -std=c++11 -Wall")# release mode
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD

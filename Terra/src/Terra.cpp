@@ -18,13 +18,13 @@ namespace Terra
     {
         ShaderLibrary::load("default",
                             {
-                                {Vertex, RESOURCES_PATH "default.vert"},
-                                {Fragment, RESOURCES_PATH "default.frag"}
+                                {Vertex, "resources/default.vert"},
+                                {Fragment, "resources/default.frag"}
                             });
         ShaderLibrary::load("player",
                             {
-                                {Vertex, RESOURCES_PATH "default.vert"},
-                                {Fragment, RESOURCES_PATH "player.frag"}
+                                {Vertex, "resources/default.vert"},
+                                {Fragment, "resources/player.frag"}
                             });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
