@@ -12,7 +12,7 @@ namespace Terra {
         ~Renderer();
 
         static void initialize(Window *window);
-        static void renderQuad(float width, float height);
+        static void renderQuad();
         static Camera* getCamera();
 
     private:

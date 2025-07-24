@@ -9,17 +9,13 @@ namespace Terra {
 
     void Renderer::initialize(Window* window)
     {
-        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glDisable(GL_CULL_FACE);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        ShaderLibrary::load("default",
-                            {
-                                {Vertex, RESOURCES_PATH "default.vert"},
-                                {Fragment, RESOURCES_PATH "default.frag"}
-                            });
         camera = std::make_unique<Camera>(Camera(window));
     }
 
@@ -28,16 +24,16 @@ namespace Terra {
         ShaderLibrary::free("default");
     }
 
-    void Renderer::renderQuad(float width, float height)
+    void Renderer::renderQuad()
     {
         if(quadVAO == 0)
         {
             GLuint EBO;
 
-            const auto topLeft = glm::vec2(0, height);
-            const auto topRight = glm::vec2(0 + width, 0 + height);
+            const auto topLeft = glm::vec2(0, 1);
+            const auto topRight = glm::vec2(1, 1);
             constexpr auto bottomLeft = glm::vec2(0, 0);
-            const auto bottomRight = glm::vec2(0 + width, 0);
+            const auto bottomRight = glm::vec2(1, 0);
 
             GLfloat vertices[] =
             {

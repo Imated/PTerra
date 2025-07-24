@@ -21,11 +21,12 @@ namespace Terra {
              (chunkPos.y * CHUNK_HEIGHT)
          );
 
-        auto mvp = glm::translate(vp, glm::vec3(tilePos, 0.f));
+        auto mvp = glm::translate(vp, glm::vec3(tilePos, -LAYER_BACKGROUND));
+        mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 0.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         shader->setUIntArray("tileFrames", 256, tileFrames.data());
         //shader->setInt("tileID", tiles[0][0].getTileData()->startFrame);
 
-        Renderer::renderQuad(CHUNK_WIDTH, CHUNK_HEIGHT);
+        Renderer::renderQuad();
     }
 }

@@ -30,8 +30,9 @@ namespace Terra {
         stbi_image_free(data);
     }
 
-    void Texture::bind()
+    void Texture::bind(GLuint slot)
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, handle);
     }
 

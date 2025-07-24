@@ -21,7 +21,7 @@ namespace Terra {
         void setUIntArray(const char *name, GLsizei count, uint32_t* value);
         void setUVec2Array(const char *name, GLsizei count, glm::uvec2* value);
 
-        void activate() const;
+        void use() const;
         void del() const;
     private:
         int getUniformLocation(const char* name);

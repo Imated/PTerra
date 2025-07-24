@@ -11,15 +11,27 @@ namespace Terra
         Random::init();
         window = std::make_unique<Window>(480, 256, "Terra");
         world = std::make_unique<World>();
+        player = std::make_unique<Player>();
     }
 
     void Terra::init()
     {
+        ShaderLibrary::load("default",
+                            {
+                                {Vertex, RESOURCES_PATH "default.vert"},
+                                {Fragment, RESOURCES_PATH "default.frag"}
+                            });
+        ShaderLibrary::load("player",
+                            {
+                                {Vertex, RESOURCES_PATH "default.vert"},
+                                {Fragment, RESOURCES_PATH "player.frag"}
+                            });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
         glfwSwapInterval(1);
         world->init();
         world->generateChunks();
+        player->init();
     }
 
     void Terra::run()
@@ -38,7 +50,7 @@ namespace Terra
         while (!glfwWindowShouldClose(window->getWindow()))
         {
             startFrame = std::chrono::high_resolution_clock::now();
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             auto direction = glm::vec2(0);
             direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
@@ -58,13 +70,15 @@ namespace Terra
             currentChunkPos = { std::floor(worldTilePos.x / CHUNK_WIDTH), std::floor(worldTilePos.y / CHUNK_WIDTH) };;
 
 
-            std::cout << "camPos: " << worldTilePos.x << ", " << worldTilePos.y
-          << " | chunk: " << currentChunkPos.x << ", " << currentChunkPos.y << std::endl;
+            //std::cout << "camPos: " << worldTilePos.x << ", " << worldTilePos.y
+          //<< " | chunk: " << currentChunkPos.x << ", " << currentChunkPos.y << std::endl;
 
             if (lastChunkPos != currentChunkPos)
                 world->updateChunks();
 
-            world->render();
+            glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
+            world->render(vp);
+            player->render(vp);
 
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();

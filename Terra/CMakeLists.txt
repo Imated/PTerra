@@ -34,7 +34,11 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}")
+add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}"
+		src/entity/Entity.h
+		src/entity/Entity.cpp
+		src/entity/Player.cpp
+		src/entity/Player.h)
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 

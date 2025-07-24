@@ -25,7 +25,7 @@ public:
 
     Chunk generateChunk(glm::vec2 chunkPos);
 
-    void render();
+    void render(glm::mat4 vp);
 
 private:
     Texture tileAtlas;
@@ -33,6 +33,5 @@ private:
     int32_t seed = 0;
     Shader* defaultShader;
 };
-
 }
 

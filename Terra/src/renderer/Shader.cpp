@@ -117,7 +117,7 @@ namespace Terra {
 
 #pragma endregion
 
-    void Shader::activate() const
+    void Shader::use() const
     {
         glUseProgram(shaderID);
     }

@@ -14,10 +14,9 @@
 #include <algorithm>
 #include <unordered_set>
 
+#include "renderer/Camera.h"
+
 namespace Terra {
-
-
-
     World::World(): tileAtlas(RESOURCES_PATH "tileAtlas.png") {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
         DEBUG("Random seed: %i", seed);
@@ -32,10 +31,7 @@ namespace Terra {
             ERR("Shader 'default' not loaded!");
             return;
         }
-
         defaultShader = shaderPtr.get();
-        defaultShader->activate();
-        tileAtlas.bind();
     }
 
     void World::loadChunk(glm::ivec2 pos) {
@@ -122,9 +118,10 @@ namespace Terra {
         };
     }
 
-    void World::render() {
-        glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
-
+    void World::render(glm::mat4 vp) {
+        defaultShader->use();
+        tileAtlas.bind(0);
+        defaultShader->setInt("mainTexture", 0);
         for (Chunk& chunk: loadedChunks) {
             chunk.render(vp, defaultShader);
         }
