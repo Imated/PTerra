@@ -11,7 +11,7 @@ namespace Terra {
         atlas->bind(1);
         shader->setInt ("frame", currentFrame);
         shader->setInt ("anim", currentAnimation);
-        shader->setInt ("playerAtlas", 1);
+        shader->setInt ("entityAtlas", 1);
         auto mvp = glm::translate(vp, glm::vec3(position, LAYER_ENTITY));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         Renderer::renderQuad();

@@ -24,7 +24,7 @@ namespace Terra
         ShaderLibrary::load("player",
                             {
                                 {Vertex, "resources/default.vert"},
-                                {Fragment, "resources/player.frag"}
+                                {Fragment, "resources/entity.frag"}
                             });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
@@ -52,26 +52,12 @@ namespace Terra
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            auto direction = glm::vec2(0);
-            direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
-            direction.x -= glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS;
-            direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
-            direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
-
-            if (direction != glm::vec2(0.f))
-                direction = glm::normalize(direction);
-
-            auto camSpeed = 8.f;
-            Renderer::getCamera()->setPosition(Renderer::getCamera()->getPosition() + direction * glm::vec2(deltaTime) * camSpeed);
+            player->update(window.get(), deltaTime);
 
             lastChunkPos = currentChunkPos;
             auto cam   = Renderer::getCamera();
             glm::vec2 worldTilePos = cam->getPosition();
-            currentChunkPos = { std::floor(worldTilePos.x / CHUNK_WIDTH), std::floor(worldTilePos.y / CHUNK_WIDTH) };;
-
-
-            //std::cout << "camPos: " << worldTilePos.x << ", " << worldTilePos.y
-          //<< " | chunk: " << currentChunkPos.x << ", " << currentChunkPos.y << std::endl;
+            currentChunkPos = { std::floor(worldTilePos.x / CHUNK_WIDTH), std::floor(worldTilePos.y / CHUNK_WIDTH) };
 
             if (lastChunkPos != currentChunkPos)
                 world->updateChunks();

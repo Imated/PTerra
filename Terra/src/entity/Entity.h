@@ -3,6 +3,8 @@
 #include "glm/vec2.hpp"
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
+#include "renderer/Window.h"
+
 namespace Terra {
     class Entity {
     public:
@@ -11,6 +13,7 @@ namespace Terra {
         virtual ~Entity() = default;
 
         void render(glm::mat4 vp) const;
+        virtual void update(Window *window, float deltaTime) {}
 
         void setPosition(glm::vec2 position);
         glm::vec2 getPosition() const;

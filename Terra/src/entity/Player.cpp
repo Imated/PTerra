@@ -1,6 +1,11 @@
 #include "Player.h"
 
+#include "GLFW/glfw3.h"
+#include "glm/ext/quaternion_geometric.hpp"
+#include "misc/Constants.h"
+#include "renderer/Renderer.h"
 #include "renderer/ShaderLibrary.h"
+#include "renderer/Window.h"
 
 namespace Terra {
     void Player::init() {
@@ -8,7 +13,22 @@ namespace Terra {
         size = glm::vec2(1, 1);
         atlas = new Texture("resources/playerAtlas.png");
         shader = ShaderLibrary::get("player").get();
+        camera = Renderer::getCamera();
     }
 
+    void Player::update(Window* window, float deltaTime) {
+        auto direction = glm::ivec2(0);
+        direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
+        direction.x -= glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS;
+        direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
+        direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
 
+        if (direction != glm::ivec2(0))
+            direction = glm::normalize(glm::vec2(direction));
+
+        auto movementSpeed = 8.f;
+        position += static_cast<glm::vec2>(direction) * glm::vec2(deltaTime) * movementSpeed;
+        camera->setPosition(glm::vec2(position.x - HORIZONTAL_TILES / 2, position.y - VERTICAL_TILES / 2));
+
+    }
 }
