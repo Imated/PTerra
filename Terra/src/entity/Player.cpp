@@ -17,17 +17,17 @@ namespace Terra {
     }
 
     void Player::update(Window* window, float deltaTime) {
-        auto direction = glm::ivec2(0);
+        auto direction = glm::vec2(0);
         direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
         direction.x -= glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS;
         direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
         direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
 
-        if (direction != glm::ivec2(0))
+        if (direction != glm::vec2(0))
             direction = glm::normalize(glm::vec2(direction));
 
         auto movementSpeed = 8.f;
-        position += static_cast<glm::vec2>(direction) * glm::vec2(deltaTime) * movementSpeed;
+        position += direction * glm::vec2(deltaTime) * movementSpeed;
         camera->setPosition(glm::vec2(position.x - HORIZONTAL_TILES / 2, position.y - VERTICAL_TILES / 2));
 
     }
