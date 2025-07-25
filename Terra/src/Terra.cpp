@@ -30,7 +30,7 @@ namespace Terra
         Registry::registerBaseItems();
         glfwSwapInterval(1);
         world->init();
-        world->generateChunks();
+        world->updateChunks();
         player->init();
     }
 

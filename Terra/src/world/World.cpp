@@ -14,13 +14,15 @@
 #include <algorithm>
 #include <unordered_set>
 
+#include "AutoTile.h"
+#include "AutoTile.h"
+#include "WorldHelper.h"
 #include "renderer/Camera.h"
 
 namespace Terra {
     World::World(): tileAtlas("resources/tileAtlas.png") {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
         DEBUG("Random seed: %i", seed);
-        loadedChunks.resize(MAX_CHUNKS_X * MAX_CHUNKS_Y);
     }
 
     World::~World() = default;
@@ -34,17 +36,28 @@ namespace Terra {
         defaultShader = shaderPtr.get();
     }
 
+    Tile* World::getTileAt(glm::vec2 pos) {
+        glm::ivec2 chunkPos = glm::ivec2(floor(pos.x / CHUNK_WIDTH), floor(pos.y / CHUNK_HEIGHT));
+
+        glm::ivec2 tilePos = glm::ivec2(
+            static_cast<int>(floor(pos.x)) % CHUNK_WIDTH,
+            static_cast<int>(floor(pos.y)) % CHUNK_HEIGHT
+        );
+
+        const auto chunk = WorldHelper::getChunkAt(chunkPos);
+        if (chunk == WorldHelper::loadedChunks.end())
+            return nullptr;
+
+        return chunk->getTileAt(tilePos);
+    }
+
     void World::loadChunk(glm::ivec2 pos) {
-        loadedChunks.push_back(generateChunk(pos));
+        WorldHelper::loadedChunks.push_back(generateChunk(pos));
     }
 
     void World::unloadChunk(glm::ivec2 pos) {
-        const auto it = std::ranges::find_if(loadedChunks, [&](const Chunk &chunk) {
-            return chunk.chunkPos == pos;
-        });
-
-        if (it != loadedChunks.end()) {
-            loadedChunks.erase(it);
+        if (const auto it = WorldHelper::getChunkAt(pos); it != WorldHelper::loadedChunks.end()) {
+            WorldHelper::loadedChunks.erase(it);
         }
     }
 
@@ -57,64 +70,40 @@ namespace Terra {
         for (int x = 0; x < MAX_CHUNKS_X; x++) {
             for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 const glm::ivec2 worldPos = camChunk + glm::ivec2(x, y);
-                if (!isChunkLoaded(worldPos))
+                if (WorldHelper::getChunkAt(worldPos) == WorldHelper::loadedChunks.end())
                     loadChunk(worldPos);
                 chunkPosNeeded.emplace_back(worldPos);
             }
         }
 
-        for (auto chunk: loadedChunks) {
+        std::vector<glm::ivec2> chunksToUnload;
+
+        for (const auto& chunk : WorldHelper::loadedChunks) {
             auto it = std::ranges::find_if(chunkPosNeeded, [&](const glm::ivec2 &chunkPos) {
                 return chunkPos == chunk.chunkPos;
             });
             if (it == chunkPosNeeded.end()) {
-                unloadChunk(chunk.chunkPos);
+                chunksToUnload.push_back(chunk.chunkPos);
             }
         }
-    }
 
-    bool World::isChunkLoaded(glm::ivec2 pos) {
-        for (const Chunk& c : loadedChunks) {
-            if (c.chunkPos == pos)
-                return true;
+        for (const auto& pos : chunksToUnload) {
+            unloadChunk(pos);
         }
-        return false;
-    }
-
-    void World::generateChunks() {
-        updateChunks();
     }
 
     Chunk World::generateChunk(glm::vec2 chunkPos) {
-        Tile chunkArray[16][16] {};
+        std::array<std::array<std::unique_ptr<Tile>, 16>, 16> chunkArray;
         for (int x = 0; x < 16; ++x) {
             for (int y = 0; y < 16; ++y) {
-                if (x == 0 && y == 15)
-                    chunkArray[x][y] = Tile(2); // top-left
-                else if (x == 15 && y == 15)
-                    chunkArray[x][y] = Tile(3); // top-right
-                else if (x == 0 && y == 0)
-                    chunkArray[x][y] = Tile(9); // bottom-left
-                else if (x == 15 && y == 0)
-                    chunkArray[x][y] = Tile(8); // bottom-right
-                else if (y == 15)
-                    chunkArray[x][y] = Tile(4); // top edge
-                else if (y == 0)
-                    chunkArray[x][y] = Tile(7); // bottom edge
-                else if (x == 0)
-                    chunkArray[x][y] = Tile(5); // left edge
-                else if (x == 15)
-                    chunkArray[x][y] = Tile(6); // right edge
-                else
-                    chunkArray[x][y] = Tile(1); // center
+                if ((x != 0 && y != 0) && (x != 15 && y != 15))
+                    chunkArray[x][y] = std::make_unique<AutoTile>(1, glm::ivec2(x, y));
             }
         }
 
-        //chunkArray[8][8] = Tile(1);
-
         return Chunk {
             chunkPos,
-            chunkArray
+            std::move(chunkArray)
         };
     }
 
@@ -122,7 +111,7 @@ namespace Terra {
         defaultShader->use();
         tileAtlas.bind(0);
         defaultShader->setInt("mainTexture", 0);
-        for (Chunk& chunk: loadedChunks) {
+        for (Chunk& chunk: WorldHelper::loadedChunks) {
             chunk.render(vp, defaultShader);
         }
     }

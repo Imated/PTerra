@@ -13,9 +13,16 @@ namespace Terra {
 
     class Tile {
         public:
-        Tile(uint8_t id = 0);
+        virtual ~Tile() = default;
+        explicit Tile(uint8_t id = 0, glm::ivec2 pos = glm::ivec2(0));
+
         TileData* getTileData();
-        private:
+        virtual void onPlace() {}
+
+        uint8_t getId();
+
+        protected:
         uint8_t id;
+        glm::ivec2 pos{};
     };
 }
