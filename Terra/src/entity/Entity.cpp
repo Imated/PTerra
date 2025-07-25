@@ -6,6 +6,10 @@
 #include "renderer/Renderer.h"
 
 namespace Terra {
+    void Entity::init() {
+        timeBeforeFrame = 1.f / 8.f;
+    }
+
     void Entity::render(glm::mat4 vp) const {
         shader->use();
         atlas->bind(1);
@@ -15,6 +19,15 @@ namespace Terra {
         auto mvp = glm::translate(vp, glm::vec3(position, LAYER_ENTITY));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         Renderer::renderQuad();
+    }
+
+    void Entity::update(Window *window, float deltaTime) {
+        if (frameTimer <= 0.f) {
+            frameTimer = timeBeforeFrame;
+            currentFrame++;
+            currentFrame = currentFrame % 4;
+        }
+        frameTimer -= deltaTime;
     }
 
     void Entity::setPosition(glm::vec2 position) {

@@ -9,11 +9,11 @@ namespace Terra {
     class Entity {
     public:
 
-        virtual void init() {}
+        virtual void init();
         virtual ~Entity() = default;
 
         void render(glm::mat4 vp) const;
-        virtual void update(Window *window, float deltaTime) {}
+        virtual void update(Window *window, float deltaTime);
 
         void setPosition(glm::vec2 position);
         glm::vec2 getPosition() const;
@@ -31,5 +31,8 @@ namespace Terra {
         uint8_t currentAnimation = 0;
         Texture* atlas = nullptr;
         Shader* shader = nullptr;
+    private:
+        _Float16 timeBeforeFrame = 0;
+        _Float16 frameTimer = 0;
     };
 }

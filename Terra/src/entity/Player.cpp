@@ -14,6 +14,7 @@ namespace Terra {
         atlas = new Texture("resources/playerAtlas.png");
         shader = ShaderLibrary::get("player").get();
         camera = Renderer::getCamera();
+        Entity::init();
     }
 
     void Player::update(Window* window, float deltaTime) {
@@ -23,12 +24,16 @@ namespace Terra {
         direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
         direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
 
-        if (direction != glm::vec2(0))
+        if (direction != glm::vec2(0)) {
             direction = glm::normalize(glm::vec2(direction));
+            currentAnimation = 1;
+        }
+        else
+            currentAnimation = 0;
 
         auto movementSpeed = 8.f;
         position += direction * glm::vec2(deltaTime) * movementSpeed;
         camera->setPosition(glm::vec2(position.x - HORIZONTAL_TILES / 2, position.y - VERTICAL_TILES / 2));
-
+        Entity::update(window, deltaTime);
     }
 }
