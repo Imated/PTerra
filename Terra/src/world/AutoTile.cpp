@@ -1,6 +1,5 @@
 #include "AutoTile.h"
-
-#include "World.h"
+#include "WorldHelper.h"
 
 namespace Terra {
     AutoTile::AutoTile(uint8_t id, glm::ivec2 pos) {
@@ -14,7 +13,7 @@ namespace Terra {
              for (int y = -1; y < 2; y++) {
                  if (glm::vec2(x, y) != glm::vec2(0)) {
                     //getTile(pos + glm::vec2(x, y).update();
-                    if (const auto tile = World::getTileAt(pos + glm::ivec2(x, y)); tile != nullptr)
+                    if (const auto tile = WorldHelper::getTileAt(pos + glm::ivec2(x, y)); tile != nullptr)
                         if (tile->getId() == id)
                             hgfedcba |= (1 << i);
                      i--;
@@ -22,9 +21,11 @@ namespace Terra {
              }
          }
         //DEBUG("%i", hgfedcba);
+        Tile::onPlace();
     }
 
     void AutoTile::update() {
-
+        currentFrame = getTileData()->stateLocations[0];
+        Tile::update();
     }
 }

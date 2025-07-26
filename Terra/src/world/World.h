@@ -16,8 +16,6 @@ public:
 
     void init();
 
-    static Tile* getTileAt(glm::vec2 pos);
-
     void loadChunk(glm::ivec2 pos);
     void unloadChunk(glm::ivec2 pos);
 

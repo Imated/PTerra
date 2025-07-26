@@ -30,7 +30,7 @@ namespace Terra {
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
                 Tile* tile = tiles[x][y].get();
-                tileFrames[x + y * CHUNK_WIDTH] = tile ? tile->getTileData()->startFrame : 0;
+                tileFrames[x + y * CHUNK_WIDTH] = tile ? tile->getFrame() : 0;
             }
         }
 

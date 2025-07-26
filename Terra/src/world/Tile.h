@@ -6,7 +6,6 @@
 
 namespace Terra {
     struct TileData {
-        uint8_t startFrame;
         uint8_t frameCount;
         std::vector<uint8_t> stateLocations;
     };
@@ -17,12 +16,15 @@ namespace Terra {
         explicit Tile(uint8_t id = 0, glm::ivec2 pos = glm::ivec2(0));
 
         TileData* getTileData();
-        virtual void onPlace() {}
+        virtual void onPlace();
+        virtual void update();
 
         uint8_t getId();
+        uint8_t getFrame();
 
         protected:
         uint8_t id;
-        glm::ivec2 pos{};
+        glm::ivec2 pos {};
+        uint8_t currentFrame = 0;
     };
 }

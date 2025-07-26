@@ -15,7 +15,6 @@
 #include <unordered_set>
 
 #include "AutoTile.h"
-#include "AutoTile.h"
 #include "WorldHelper.h"
 #include "renderer/Camera.h"
 
@@ -34,21 +33,6 @@ namespace Terra {
             return;
         }
         defaultShader = shaderPtr.get();
-    }
-
-    Tile* World::getTileAt(glm::vec2 pos) {
-        glm::ivec2 chunkPos = glm::ivec2(floor(pos.x / CHUNK_WIDTH), floor(pos.y / CHUNK_HEIGHT));
-
-        glm::ivec2 tilePos = glm::ivec2(
-            static_cast<int>(floor(pos.x)) % CHUNK_WIDTH,
-            static_cast<int>(floor(pos.y)) % CHUNK_HEIGHT
-        );
-
-        const auto chunk = WorldHelper::getChunkAt(chunkPos);
-        if (chunk == WorldHelper::loadedChunks.end())
-            return nullptr;
-
-        return chunk->getTileAt(tilePos);
     }
 
     void World::loadChunk(glm::ivec2 pos) {
