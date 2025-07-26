@@ -81,8 +81,10 @@ namespace Terra {
         std::array<std::array<std::unique_ptr<Tile>, 16>, 16> chunkArray;
         for (int x = 0; x < 16; ++x) {
             for (int y = 0; y < 16; ++y) {
-                if ((x != 0 && y != 0) && (x != 15 && y != 15))
+                if (x != 0 && y != 0 && x != 15 && y != 15)
                     chunkArray[x][y] = std::make_unique<AutoTile>(1, glm::ivec2(x, y));
+                else
+                    chunkArray[x][y] = std::make_unique<AutoTile>(0, glm::ivec2(x, y));
             }
         }
 

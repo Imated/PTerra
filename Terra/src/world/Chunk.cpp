@@ -24,13 +24,13 @@ namespace Terra {
     }
 
     void Chunk::render(glm::mat4 vp, Shader* shader) {
-        std::vector<glm::uint32_t> tileFrames;
-        tileFrames.resize(CHUNK_WIDTH * CHUNK_HEIGHT);
+        std::vector<uint32_t> tileFrames;
 
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
                 Tile* tile = tiles[x][y].get();
-                tileFrames[x + y * CHUNK_WIDTH] = tile ? tile->getFrame() : 0;
+                if (tile)
+                    tileFrames.push_back(tile->getFrame());
             }
         }
 
