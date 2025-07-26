@@ -28,7 +28,7 @@ public:
 private:
     Texture tileAtlas;
     int32_t seed = 0;
-    Shader* defaultShader;
+    Shader* tileShader;
 };
 }
 

@@ -19,7 +19,7 @@
 #include "renderer/Camera.h"
 
 namespace Terra {
-    World::World(): tileAtlas("resources/tileAtlas.png") {
+    World::World(): tileAtlas("resources/tileAtlas.png"), tileShader(nullptr) {
         seed = Random::get<int32_t>(INT32_MIN, INT32_MAX);
         DEBUG("Random seed: %i", seed);
     }
@@ -32,7 +32,8 @@ namespace Terra {
             ERR("Shader 'default' not loaded!");
             return;
         }
-        defaultShader = shaderPtr.get();
+        tileShader = shaderPtr.get();
+        tileShader->setInt("mainTexture", 0);
     }
 
     void World::loadChunk(glm::ivec2 pos) {
@@ -92,11 +93,10 @@ namespace Terra {
     }
 
     void World::render(glm::mat4 vp) {
-        defaultShader->use();
+        tileShader->use();
         tileAtlas.bind(0);
-        defaultShader->setInt("mainTexture", 0);
         for (Chunk& chunk: WorldHelper::loadedChunks) {
-            chunk.render(vp, defaultShader);
+            chunk.render(vp, tileShader);
         }
     }
 }
