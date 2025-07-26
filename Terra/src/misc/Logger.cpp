@@ -13,18 +13,22 @@ void log_inner(const char* message, unsigned char color, bool newline, va_list a
     void log_inner(const char* message, unsigned char color, bool newLine, va_list args) {
         const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         static unsigned char levels[6] = { 64, 4, 6, 2, 1, 8 };
-        if (color >= sizeof(levels)) {
+        constexpr size_t levelCount = std::size(levels);
+        if (color >= levelCount) {
             color = ERROR;
         }
         SetConsoleTextAttribute(consoleHandle, levels[color]);
         char buffer[1024];
-        vsnprintf(buffer, sizeof(buffer), message, args);
-        const LPDWORD numWritten = nullptr;
-        WriteConsoleA(consoleHandle, buffer, static_cast<DWORD>(strlen(buffer)), numWritten, nullptr);
+        int len = vsnprintf(buffer, sizeof(buffer), message, args);
+        if (len < 0) len = 0;
+        if (len > static_cast<int>(sizeof(buffer))) len = static_cast<int>(sizeof(buffer));
+
+        DWORD numWritten = 0;
+        WriteConsoleA(consoleHandle, buffer, static_cast<DWORD>(len), &numWritten, nullptr);
         if (newLine)
-            WriteConsoleA(consoleHandle, "\n", 1, numWritten, nullptr);
+            WriteConsoleA(consoleHandle, "\n", 1, &numWritten, nullptr);
         else
-            WriteConsoleA(consoleHandle, "\r                    \r", 22, nullptr, nullptr);
+            WriteConsoleA(consoleHandle, "\r                    \r", 22, &numWritten, nullptr);
         SetConsoleTextAttribute(consoleHandle, 7);
     }
 
