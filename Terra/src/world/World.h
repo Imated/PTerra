@@ -16,12 +16,10 @@ public:
 
     void init();
 
-    void loadChunk(glm::ivec2 pos);
-    void unloadChunk(glm::ivec2 pos);
+    static void loadChunk(glm::ivec2 pos);
+    static void unloadChunk(glm::ivec2 pos);
 
     void updateChunks();
-
-    Chunk generateChunk(glm::vec2 chunkPos);
 
     void render(glm::mat4 vp);
 

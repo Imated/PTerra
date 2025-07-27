@@ -5,6 +5,8 @@
 #include "glm/vec2.hpp"
 
 namespace Terra {
+    class Chunk;
+
     struct TileData {
         uint8_t frameCount;
         std::vector<uint8_t> stateLocations;
@@ -21,10 +23,11 @@ namespace Terra {
 
         uint8_t getId();
         uint8_t getFrame();
+        glm::ivec2 pos {};
 
         protected:
         uint8_t id;
-        glm::ivec2 pos {};
+
         uint8_t currentFrame = 0;
     };
 }

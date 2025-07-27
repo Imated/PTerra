@@ -7,6 +7,7 @@ namespace Terra {
         explicit AutoTile(uint8_t id = 0, glm::ivec2 pos = glm::ivec2(0));
         void onPlace() override;
         void update() override;
+
     private:
         uint8_t hgfedcba = 0;
     };

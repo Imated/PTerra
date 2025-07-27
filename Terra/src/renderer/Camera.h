@@ -12,6 +12,7 @@ class Camera {
     glm::mat4x4 getProjectionMatrix();
     void setPosition(glm::vec2 position);
     glm::vec2 getPosition();
+    glm::ivec2 getChunk();
 
     private:
     Window::WindowParams windowSize;

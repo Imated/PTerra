@@ -30,7 +30,6 @@ namespace Terra
         Registry::registerBaseItems();
         glfwSwapInterval(1);
         world->init();
-        world->updateChunks();
         player->init();
     }
 
@@ -43,7 +42,7 @@ namespace Terra
     double totalTime = 0.0;
     int frameCount = 0;
     glm::vec2 lastChunkPos = glm::vec2(0);
-    glm::vec2 currentChunkPos = glm::vec2(0);
+    glm::vec2 currentChunkPos = glm::vec2(1);
 
     void Terra::gameLoop()
     {
@@ -54,13 +53,11 @@ namespace Terra
 
             player->update(window.get(), deltaTime);
 
-            lastChunkPos = currentChunkPos;
-            auto cam   = Renderer::getCamera();
-            glm::vec2 worldTilePos = cam->getPosition();
-            currentChunkPos = { std::floor(worldTilePos.x / CHUNK_WIDTH), std::floor(worldTilePos.y / CHUNK_WIDTH) };
-
             if (lastChunkPos != currentChunkPos)
                 world->updateChunks();
+
+            lastChunkPos = currentChunkPos;
+            currentChunkPos = Renderer::getCamera()->getChunk();
 
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);

@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <cstring>
 #include <memory>
 
 #include "Tile.h"
