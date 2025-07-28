@@ -40,8 +40,9 @@ namespace Terra {
 
     Tile* Chunk::getTileAt(glm::ivec2 pos) const {
         if (pos.x < 0 || pos.y < 0 || pos.x >= 16 || pos.y >= 16)
+            //ERR("WHAT");
             return tiles[0][0].get();
-        INFO("%i, %i", pos.x, pos.y);
+        //INFO("getting tile: %i, %i", pos.x, pos.y);
         return tiles[pos.x][pos.y].get();
     }
 }

@@ -69,7 +69,7 @@ namespace Terra {
         }
 
     Chunk World::generateChunk(glm::ivec2 chunkPos) {
-        INFO("Generating chunk: %i, %i", chunkPos.x, chunkPos.y);
+        //INFO("Generating chunk: %i, %i", chunkPos.x, chunkPos.y);
 
         glm::ivec2 worldBase = chunkPos * glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT);
         std::array<std::array<std::unique_ptr<Tile>, 16>, 16> chunkArray;
@@ -83,7 +83,7 @@ namespace Terra {
             }
         }
 
-        INFO("Generated");
+        //INFO("Generated");
 
         return Chunk {
             chunkPos,
@@ -93,8 +93,9 @@ namespace Terra {
 
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         //DEBUG("Searching for tile at: %f, %f", worldPos.x, worldPos.y);
-        const glm::ivec2 chunkPos = glm::floor(intBitsToFloat(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        const auto chunk = chunkData::chunks[chunkPos.x][chunkPos.y];
+        const glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
+        DEBUG("Searching for tile at chunk: %i, %i", chunkPos.x, chunkPos.y);
+         const auto chunk = chunkData::chunks[chunkPos.x][chunkPos.y];
         //INFO("Found for tile at: %f, %f", glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).x, glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).y);
 
         return chunk->getTileAt(worldPos % glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT));
