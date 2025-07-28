@@ -1,9 +1,6 @@
 #include "Chunk.h"
 
 #include "AutoTile.h"
-#include "AutoTile.h"
-#include "AutoTile.h"
-#include "AutoTile.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.inl"
 #include "misc/Constants.h"
@@ -20,8 +17,10 @@ namespace Terra {
     void Chunk::render(glm::mat4 vp, Shader* shader) {
         std::vector<uint32_t> tileFrames;
 
-        for (int x = 0; x < CHUNK_WIDTH; ++x) {
-            for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+        //TODO: Figure out how and WHY this code segfaults
+
+        for (int x = 0; x < CHUNK_WIDTH; x++) {
+            for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 tileFrames.push_back(tiles[x][y]->getFrame());
             }
         }
@@ -30,7 +29,6 @@ namespace Terra {
              (chunkPos.x * CHUNK_WIDTH),
              (chunkPos.y * CHUNK_HEIGHT)
          );
-
         auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_BACKGROUND));
         mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 0.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
@@ -42,7 +40,8 @@ namespace Terra {
 
     Tile* Chunk::getTileAt(glm::ivec2 pos) {
         if (pos.x < 0 || pos.y < 0 || pos.x >= 16 || pos.y >= 16)
-            return nullptr;
+            return tiles[0][0].get();
+        INFO("%i, %i", pos.x, pos.y);
         return tiles[pos.x][pos.y].get();
     }
 }

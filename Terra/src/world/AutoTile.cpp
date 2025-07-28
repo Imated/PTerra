@@ -1,7 +1,9 @@
+#pragma once
+
 #include "AutoTile.h"
 #include "misc/Logger.h"
 #include "Chunk.h"
-#include "WorldHelper.h"
+#include "World.h"
 
 namespace Terra {
     AutoTile::AutoTile(uint8_t id, glm::ivec2 pos) {
@@ -19,13 +21,13 @@ namespace Terra {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {
-                    if (const auto tile = WorldHelper::getTileAt(pos + glm::ivec2(x, y)); tile != nullptr) {
+                    if (const auto tile = World::getGlobalTileAt(pos + glm::ivec2(x, y)); tile != nullptr) {
                         if (tile->getId() == id) {
                             hgfedcba |= (1 << i);
                         }
                     }
-                    else
-                        ERR("eeeeeee");
+                    else;
+                        //ERR("eeeeeee");
                     i--;
                 }
             }
