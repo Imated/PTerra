@@ -22,16 +22,16 @@ namespace Terra {
 
     Chunk* World::worldData::operator[](glm::ivec2 worldPos) {
         if (worldPos.x >= 0 && worldPos.y >= 0) { //top right I
-            return &World::worldData::quadrant1[worldPos.x][worldPos.y];
+            return &quadrant1[worldPos.x][worldPos.y];
         }
         if (worldPos.x < 0 && worldPos.y >= 0) { //top left II
-            return &World::worldData::quadrant2[-worldPos.x][worldPos.y];
+            return &quadrant2[-worldPos.x][worldPos.y];
         }
         if (worldPos.x < 0 && worldPos.y < 0) { //bottom left III
-            return &World::worldData::quadrant3[-worldPos.x][-worldPos.y];
+            return &quadrant3[-worldPos.x][-worldPos.y];
         }
         if (worldPos.x >= 0 && worldPos.y < 0) { //bottom right IIII
-            return &World::worldData::quadrant4[worldPos.x][-worldPos.y];
+            return &quadrant4[worldPos.x][-worldPos.y];
         }
         ERR("How the fuck.");
         return nullptr;
@@ -54,16 +54,16 @@ namespace Terra {
         tileShader = shaderPtr.get();
         tileShader->setInt("mainTexture", 0);
 
-        World::worldData::quadrant1 = new std::array<Chunk, 64>[64];
-        World::worldData::quadrant2 = new std::array<Chunk, 64>[64];
-        World::worldData::quadrant3 = new std::array<Chunk, 64>[64];
-        World::worldData::quadrant4 = new std::array<Chunk, 64>[64];
+        worldData::quadrant1 = new std::array<Chunk, 64>[64];
+        worldData::quadrant2 = new std::array<Chunk, 64>[64];
+        worldData::quadrant3 = new std::array<Chunk, 64>[64];
+        worldData::quadrant4 = new std::array<Chunk, 64>[64];
 
         //initial world gen
         for (int i = -16; i < 16; i++) {
             for (int j = -16; j < 16; j++) {
                 auto tmpvec = glm::ivec2(i, j);
-                *world[tmpvec] = World::generateChunk(tmpvec);
+                *world[tmpvec] = generateChunk(tmpvec);
                 }
             }
         }
@@ -127,14 +127,9 @@ namespace Terra {
         glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
         INFO("Camera chunk: %i, %i", camChunk.x, camChunk.y);
 
-        for (const auto& tile : tilesToUpdate) {
-            tile->update();
-        }
-        tilesToUpdate.clear();
-
         for (int x = 0; x < MAX_CHUNKS_X; x++) {
             for (int y = 0; y < MAX_CHUNKS_Y; y++) {
-                World::chunkData::chunks[x][y] = nullptr;
+                chunkData::chunks[x][y] = nullptr;
             }
         }
         chunkData::globalPositions.clear();
@@ -143,23 +138,19 @@ namespace Terra {
             for (int y = -(MAX_CHUNKS_Y / 2); y <= MAX_CHUNKS_Y / 2; y++) {
                 const glm::ivec2 worldPos = camChunk + glm::ivec2(x, y);
                 INFO("Camera chunk: %i, %i, %i, %i", worldPos.x, worldPos.y, camChunk.x, camChunk.y);
-                World::chunkData::loadChunk(worldPos, camChunk);
+                chunkData::loadChunk(worldPos, camChunk);
             }
         }
 
-        /*
-        std::vector<glm::ivec2> chunksToUnload;
-
-        for (const auto& pos: WorldHelper::loadedChunks | std::views::keys) {
-            if (std::ranges::find(chunkPosNeeded, pos) == chunkPosNeeded.end()) {
-                chunksToUnload.emplace_back(pos);
+        for (auto chunks: chunkData::chunks) {
+            for (auto chunk: chunks) {
+                for (int x = 0; x < CHUNK_WIDTH; x++) {
+                    for (int y = 0; y < CHUNK_HEIGHT; y++) {
+                        chunk->getTileAt({x, y})->update();
+                    }
+                }
             }
         }
-
-        for (const auto& pos : chunksToUnload) {
-            unloadChunk(pos);
-        }
-        */
     }
 
     void World::render(glm::mat4 vp) {
