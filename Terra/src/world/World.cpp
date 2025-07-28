@@ -100,21 +100,10 @@ namespace Terra {
         return chunk->getTileAt(worldPos % glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT));
     }
 
-    static std::vector<Tile*> tilesToUpdate;
-
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
         auto pos = localPos + centerChunk;
         chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2] = world[pos];
         globalPositions[std::vector{ pos.x, pos.y }] = pos;
-
-        for (int x = 0; x < 16; ++x) {
-            for (int y = 0; y < 16; ++y) {
-                auto chunk = chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2];
-                if (chunk != nullptr) {
-                    tilesToUpdate.push_back(chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2]->getTileAt({x, y}));
-                }
-            }
-        }
     }
 
     void World::chunkData::unloadChunk(glm::ivec2 worldPos) {
@@ -156,7 +145,7 @@ namespace Terra {
     void World::render(glm::mat4 vp) {
         tileShader->use();
         tileAtlas.bind(0);
-        for (const auto &chunks: World::chunkData::chunks) {
+        for (const auto &chunks : chunkData::chunks) {
             for (const auto &chunk : chunks) {
                 chunk->render(vp, tileShader);
             }
