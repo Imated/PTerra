@@ -1,9 +1,8 @@
 #include "WorldHelper.h"
 
 #include <cmath>
+#include <ranges>
 
-#include "AutoTile.h"
-#include "AutoTile.h"
 #include "AutoTile.h"
 #include "World.h"
 #include "glm/common.hpp"
@@ -12,10 +11,6 @@
 
 namespace Terra {
     Chunk WorldHelper::generateChunk(glm::vec2 chunkPos) {
-        if (getChunkAt(chunkPos) != loadedChunks.end()) {
-            WARN("Chunk already loaded.");
-            return Chunk();
-        }
         DEBUG("Generating chunk: %f, %f", chunkPos.x, chunkPos.y);
 
         glm::ivec2 worldBase = chunkPos * glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT);
@@ -30,32 +25,22 @@ namespace Terra {
             }
         }
 
+        INFO("Generated");
+
         return Chunk {
             chunkPos,
             std::move(chunkArray)
         };
     }
 
-    std::vector<Chunk>::iterator WorldHelper::getChunkAt(glm::ivec2 pos) {
-        const auto it = std::ranges::find_if(loadedChunks, [&](const Chunk &chunk) {
-              return chunk.chunkPos == pos;
-          });
-        return it;
-    }
-
     Tile* WorldHelper::getTileAt(glm::vec2 worldPos) {
-        DEBUG("Searching for tile at: %f, %f", worldPos.x, worldPos.y);
-        glm::ivec2 chunkPos = glm::floor(worldPos / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        auto chunk = getChunkAt(chunkPos);
-        if (chunk == loadedChunks.end()) {
-            //World::loadChunk(chunkPos);
-            chunk = getChunkAt(chunkPos);
-            ERR("Failed to find tile");
+        //DEBUG("Searching for tile at: %f, %f", worldPos.x, worldPos.y);
+        const glm::ivec2 chunkPos = glm::floor(worldPos / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
+        const auto chunk = loadedChunks.find(chunkPos);
+        if (chunk == loadedChunks.end())
             return nullptr;
-        }
+        //INFO("Found for tile at: %f, %f", glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).x, glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).y);
 
-        INFO("Found for tile at: %f, %f", chunk->getTileAt(glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)))->pos.x, chunk->getTileAt(glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)))->pos.y);
-
-        return chunk->getTileAt(glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)));
+        return chunk->second->getTileAt(glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)));
     }
 }

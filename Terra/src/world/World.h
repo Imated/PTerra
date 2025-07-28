@@ -16,7 +16,7 @@ public:
 
     void init();
 
-    static void loadChunk(glm::ivec2 pos);
+    static void loadChunk(glm::ivec2 worldPos);
     static void unloadChunk(glm::ivec2 pos);
 
     void updateChunks();

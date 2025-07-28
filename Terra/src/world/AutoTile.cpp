@@ -19,9 +19,13 @@ namespace Terra {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {
-                    if (const auto tile = WorldHelper::getTileAt(pos + glm::ivec2(x, y)); tile != nullptr)
-                        if (tile->getId() == id)
+                    if (const auto tile = WorldHelper::getTileAt(pos + glm::ivec2(x, y)); tile != nullptr) {
+                        if (tile->getId() == id) {
                             hgfedcba |= (1 << i);
+                        }
+                    }
+                    else
+                        ERR("eeeeeee");
                     i--;
                 }
             }
