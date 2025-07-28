@@ -42,7 +42,12 @@ namespace Terra {
         DEBUG("Random seed: %i", seed);
     }
 
-    World::~World() = default;
+    World::~World() {
+        delete worldData::quadrant1;
+        delete worldData::quadrant2;
+        delete worldData::quadrant3;
+        delete worldData::quadrant4;
+    }
 
 
     void World::init() {
@@ -92,12 +97,20 @@ namespace Terra {
     }
 
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
-        //DEBUG("Searching for tile at: %f, %f", worldPos.x, worldPos.y);
-        const glm::ivec2 chunkPos = glm::floor(intBitsToFloat(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        const auto chunk = chunkData::chunks[chunkPos.x][chunkPos.y];
-        //INFO("Found for tile at: %f, %f", glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).x, glm::mod(worldPos, glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT)).y);
+        glm::ivec2 chunkPos = worldPos / glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT);
 
-        return chunk->getTileAt(worldPos % glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT));
+        if (std::abs(chunkPos.x) >= MAX_CHUNKS_X / 2 || std::abs(chunkPos.y) >= MAX_CHUNKS_Y / 2)
+            return nullptr;
+
+        auto* chunk = chunkData::chunks[chunkPos.x + MAX_CHUNKS_X / 2][chunkPos.y + MAX_CHUNKS_Y / 2];
+        if (!chunk) return nullptr;
+
+        glm::ivec2 tilePos = {
+            (worldPos.x % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH,
+            (worldPos.y % CHUNK_HEIGHT + CHUNK_HEIGHT) % CHUNK_HEIGHT
+        };
+
+        return chunk->getTileAt(tilePos);
     }
 
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
@@ -133,6 +146,7 @@ namespace Terra {
 
         for (auto chunks: chunkData::chunks) {
             for (auto chunk: chunks) {
+                if (!chunk) continue;
                 for (int x = 0; x < CHUNK_WIDTH; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         chunk->getTileAt({x, y})->update();
@@ -143,11 +157,16 @@ namespace Terra {
     }
 
     void World::render(glm::mat4 vp) {
+        INFO("New Frame!");
         tileShader->use();
         tileAtlas.bind(0);
         for (const auto &chunks : chunkData::chunks) {
             for (const auto &chunk : chunks) {
-                chunk->render(vp, tileShader);
+                if (chunk != nullptr)
+                    chunk->render(vp, tileShader);
+                else;
+                    WARN("Chunk is null");
+                INFO("RENDERING CHUNK");
             }
         }
     }
