@@ -1,6 +1,6 @@
 ﻿#include "Terra.h"
 
-// #include "misc/Constants.h"
+#include "misc/Constants.h"
 #include "misc/Random.h"
 #include "renderer/ShaderLibrary.h"
 
@@ -9,7 +9,7 @@ namespace Terra
     Terra::Terra()
     {
         Random::init();
-        window = std::make_unique<Window>(480, 270, "Terra");
+        window = std::make_unique<Window>(480, 256, "Terra");
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
     }
@@ -51,7 +51,7 @@ namespace Terra
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            player->update(window.get(), static_cast<float>(deltaTime));
+            player->update(window.get(), deltaTime);
 
             currentChunkPos = Renderer::getCamera()->getChunk();
             if (lastChunkPos != currentChunkPos)
@@ -70,7 +70,7 @@ namespace Terra
             totalTime += deltaTime;
             frameCount++;
 
-            // double avgFPS = frameCount / totalTime;
+            double avgFPS = frameCount / totalTime;
 
             //std::cout << "\rFPS: " << avgFPS << "          ";
         }

@@ -16,7 +16,8 @@ namespace Terra {
     }
 
     glm::mat4x4 Camera::getProjectionMatrix() {
-        glm::mat4x4 projection = glm::ortho(0.f, HORIZONTAL_TILES, 0.f, VERTICAL_TILES);
+        glm::mat4x4 projection = glm::mat4x4(1.0f);
+        projection = glm::ortho(0.f, HORIZONTAL_TILES, 0.f, VERTICAL_TILES);
         return projection;
     }
 
@@ -34,7 +35,8 @@ namespace Terra {
         glm::vec2 center = bl + glm::vec2(HORIZONTAL_TILES/2.f, VERTICAL_TILES/2.f);
         // convert to chunk coords
         glm::vec2 f = center / glm::vec2(CHUNK_WIDTH/2, CHUNK_HEIGHT/2);
-        //DEBUG("Camera chunk position: %f, %f, %f, %f",std::floor(f.x), std::floor(f.y), cameraPos.x, cameraPos.y);
-        return {std::floor(f.x), std::floor(f.y)};
+        //DEBUG("Camera chunk position: %f, %f",std::floor(f.x), std::floor(f.y));
+        return glm::ivec2(std::floor(f.x), std::floor(f.y));
+        DEBUG("Camera chunk position: %f, %f, %f, %f",std::floor(f.x), std::floor(f.y), cameraPos.x, cameraPos.y);
     }
 }

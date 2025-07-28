@@ -17,6 +17,9 @@ public:
 
     void init();
 
+    static void loadChunk(glm::ivec2 worldPos, glm::ivec2 centerChunk);
+    static void unloadChunk(glm::ivec2 pos);
+
     void updateChunks();
 
     void render(glm::mat4 vp);
