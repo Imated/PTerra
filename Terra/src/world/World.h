@@ -42,7 +42,7 @@ public:
         static inline std::array<Chunk, 64>* quadrant4;
         Chunk* operator[](glm::ivec2 worldPos);
     };
-    static worldData world;
+    static inline worldData world;
 
 private:
     Texture tileAtlas;

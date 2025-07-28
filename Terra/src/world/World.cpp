@@ -102,21 +102,24 @@ namespace Terra {
 
     static std::vector<Tile*> tilesToUpdate;
 
-    void World::chunkData::loadChunk(glm::ivec2 worldPos, glm::ivec2 centerChunk) {
-        glm::ivec2 pos = {centerChunk.x + worldPos.x, centerChunk.y + worldPos.y};
-        World::chunkData::chunks[pos.x + MAX_CHUNKS_X/2][pos.y + MAX_CHUNKS_Y/2] = World::world[worldPos];
-        World::chunkData::globalPositions[std::vector<int>{worldPos.x, worldPos.y}] = pos;
+    void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
+        auto pos = localPos + centerChunk;
+        chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2] = world[pos];
+        globalPositions[std::vector{ pos.x, pos.y }] = pos;
 
         for (int x = 0; x < 16; ++x) {
             for (int y = 0; y < 16; ++y) {
-                tilesToUpdate.push_back(World::chunkData::chunks[pos.x][pos.y]->getTileAt({x, y}));
+                auto chunk = chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2];
+                if (chunk != nullptr) {
+                    tilesToUpdate.push_back(chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2]->getTileAt({x, y}));
+                }
             }
         }
     }
 
     void World::chunkData::unloadChunk(glm::ivec2 worldPos) {
-        World::chunkData::chunks[World::chunkData::globalPositions[std::vector<int>{worldPos.x, worldPos.y}].x][World::chunkData::globalPositions[std::vector<int>{worldPos.x, worldPos.y}].y] = nullptr;
-        World::chunkData::globalPositions.erase(std::vector<int>{worldPos.x, worldPos.y});
+        chunks[globalPositions[std::vector{worldPos.x, worldPos.y}].x][globalPositions[std::vector{worldPos.x, worldPos.y}].y] = nullptr;
+        globalPositions.erase(std::vector{worldPos.x, worldPos.y});
     }
 
     void World::updateChunks() {
@@ -124,12 +127,17 @@ namespace Terra {
         glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
         INFO("Camera chunk: %i, %i", camChunk.x, camChunk.y);
 
+        for (const auto& tile : tilesToUpdate) {
+            tile->update();
+        }
+        tilesToUpdate.clear();
+
         for (int x = 0; x < MAX_CHUNKS_X; x++) {
             for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 World::chunkData::chunks[x][y] = nullptr;
             }
         }
-        World::chunkData::globalPositions.clear();
+        chunkData::globalPositions.clear();
 
         for (int x = -(MAX_CHUNKS_X / 2); x <= MAX_CHUNKS_X / 2; x++) {
             for (int y = -(MAX_CHUNKS_Y / 2); y <= MAX_CHUNKS_Y / 2; y++) {
@@ -152,11 +160,6 @@ namespace Terra {
             unloadChunk(pos);
         }
         */
-
-        for (const auto& tile : tilesToUpdate) {
-            tile->update();
-        }
-        tilesToUpdate.clear();
     }
 
     void World::render(glm::mat4 vp) {

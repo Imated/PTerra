@@ -38,7 +38,7 @@ namespace Terra {
         Renderer::renderQuad();
     }
 
-    Tile* Chunk::getTileAt(glm::ivec2 pos) {
+    Tile* Chunk::getTileAt(glm::ivec2 pos) const {
         if (pos.x < 0 || pos.y < 0 || pos.x >= 16 || pos.y >= 16)
             return tiles[0][0].get();
         INFO("%i, %i", pos.x, pos.y);

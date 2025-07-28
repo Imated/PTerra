@@ -30,6 +30,6 @@ namespace Terra {
 
         void render(glm::mat4 vp, Shader* shader);
 
-        Tile* getTileAt(glm::ivec2 pos);
+        Tile* getTileAt(glm::ivec2 pos) const;
     };
 }

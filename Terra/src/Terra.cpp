@@ -41,8 +41,8 @@ namespace Terra
 
     double totalTime = 0.0;
     int frameCount = 0;
-    glm::vec2 lastChunkPos = glm::vec2(0);
-    glm::vec2 currentChunkPos = glm::vec2(1);
+    glm::vec2 lastChunkPos = glm::vec2(9999);
+    glm::vec2 currentChunkPos = glm::vec2(0);
 
     void Terra::gameLoop()
     {

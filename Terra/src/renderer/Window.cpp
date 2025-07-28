@@ -31,7 +31,7 @@ namespace Terra {
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-        window = glfwCreateWindow(mode->width, mode->height, title.c_str(), NULL, nullptr); //change NULL to monitor for full screen
+        window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr); //change NULL to monitor for full screen (no it doenst)
         if (!window)
         {
             ASSERT("Failed to create window! Aborting...");
