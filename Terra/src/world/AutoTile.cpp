@@ -30,7 +30,7 @@ namespace Terra {
                         }
                     }
                     else {
-                        ERR("got nullptr as tile: %i %i; %i %i. for position %i %i", pos.x, pos.y, x, y, neighbor.x, neighbor.y);
+                        DEBUG("got nullptr as tile: %i %i; %i %i. for position %i %i", pos.x, pos.y, x, y, neighbor.x, neighbor.y);
                         foundNullTile = true;
                     }
                     i--;

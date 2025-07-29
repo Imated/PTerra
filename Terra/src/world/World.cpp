@@ -73,12 +73,12 @@ namespace Terra {
         //INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
         if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
-            WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
+            DEBUG("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
             return nullptr;
         }
         auto& chunk = chunkData::chunks[translatedChunk.x + MAX_CHUNKS_X / 2][translatedChunk.y + MAX_CHUNKS_Y / 2];
         if (!chunk) {
-            WARN("Null chunk got.");
+            DEBUG("Null chunk got.");
             return nullptr;
         }
 
@@ -103,7 +103,7 @@ namespace Terra {
     void World::updateChunks() {
 
         glm::ivec2 camChunk = Renderer::getCamera()->getChunkCentered();
-        INFO("Camera chunk: %i, %i", camChunk.x, camChunk.y);
+        DEBUG("Camera chunk: %i, %i", camChunk.x, camChunk.y);
 
         // unload all chunks before loading
         for (int x = 0; x <= MAX_CHUNKS_X; x++) {
@@ -122,7 +122,8 @@ namespace Terra {
         // update all chunks
         for (auto& chunks: chunkData::chunks) {
             for (auto& chunk: chunks) {
-                if (!chunk) continue;
+                if (!chunk)
+                    continue;
                 for (int x = 0; x < CHUNK_WIDTH; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         chunk->getTileAt({x, y})->update();
@@ -140,7 +141,7 @@ namespace Terra {
                 if (chunk != nullptr)
                     chunk->render(vp, tileShader);
                 else
-                    WARN("Chunk is null");
+                    DEBUG("Chunk is null");
             }
         }
     }
