@@ -37,7 +37,6 @@ namespace Terra {
 
     Tile* Chunk::getTileAt(glm::ivec2 pos) const {
         if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
-        if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return nullptr;
         return tiles[pos.x][pos.y].get();
     }

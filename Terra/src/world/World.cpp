@@ -52,11 +52,12 @@ namespace Terra {
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
 
-                if (x + y*CHUNK_WIDTH <= chunkPos.x)
+                if /*(x + y*CHUNK_WIDTH <= chunkPos.x)*/ /*(x != y)*/ ((x-8)*(x-8)+(y-8)*(y-8) >= 32)
                     chunkArray[x][y] = std::make_unique<AutoTile>(1, worldBase + glm::ivec2(x, y));
                 else
                     chunkArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
 
+                //chunkArray[x][y] = std::make_unique<AutoTile>(1, worldBase + glm::ivec2(x, y));
             }
         }
 
@@ -72,12 +73,12 @@ namespace Terra {
         //INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
         if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
-            //WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
+            WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
             return nullptr;
         }
         auto& chunk = chunkData::chunks[translatedChunk.x + MAX_CHUNKS_X / 2][translatedChunk.y + MAX_CHUNKS_Y / 2];
         if (!chunk) {
-            //WARN("Null chunk got.");
+            WARN("Null chunk got.");
             return nullptr;
         }
 
@@ -90,7 +91,7 @@ namespace Terra {
     }
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
         auto pos = localPos + centerChunk;
-        INFO("Loading chunk %i, %i", pos.x, pos.y);
+        //INFO("Loading chunk %i, %i", pos.x, pos.y);
         auto it = worldChunks.find(pos);
         if (it != worldChunks.end()) {
             chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2] = it->second.get();
@@ -101,19 +102,19 @@ namespace Terra {
 
     void World::updateChunks() {
 
-        glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
+        glm::ivec2 camChunk = Renderer::getCamera()->getChunkCentered();
         INFO("Camera chunk: %i, %i", camChunk.x, camChunk.y);
 
         // unload all chunks before loading
-        for (int x = 0; x < MAX_CHUNKS_X; x++) {
-            for (int y = 0; y < MAX_CHUNKS_Y; y++) {
+        for (int x = 0; x <= MAX_CHUNKS_X; x++) {
+            for (int y = 0; y <= MAX_CHUNKS_Y; y++) {
                 chunkData::chunks[x][y] = nullptr;
             }
         }
 
         //load all chunks around camera
-        for (int x = -(MAX_CHUNKS_X / 2); x < MAX_CHUNKS_X / 2; x++) {
-            for (int y = -(MAX_CHUNKS_Y / 2); y < MAX_CHUNKS_Y / 2; y++) {
+        for (int x = -(MAX_CHUNKS_X / 2); x <= MAX_CHUNKS_X / 2; x++) {
+            for (int y = -(MAX_CHUNKS_Y / 2); y <= MAX_CHUNKS_Y / 2; y++) {
                 chunkData::loadChunk({x, y}, camChunk);
             }
         }

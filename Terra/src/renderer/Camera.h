@@ -13,6 +13,7 @@ class Camera {
     void setPosition(glm::vec2 position);
     glm::vec2 getPosition();
     glm::ivec2 getChunk();
+    glm::ivec2 getChunkCentered();
 
     private:
     Window::WindowParams windowSize;

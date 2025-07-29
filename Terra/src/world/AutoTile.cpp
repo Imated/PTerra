@@ -23,13 +23,14 @@ namespace Terra {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {
                     glm::ivec2 neighbor = pos + glm::ivec2(x, y);
-                    if (const auto tile = World::getGlobalTileAt(neighbor); tile != nullptr) {
+                    const auto tile = World::getGlobalTileAt(neighbor);
+                    if (tile) {
                         if (tile->getId() == id) {
                             hgfedcba |= (1 << i);
                         }
                     }
                     else {
-                        ERR("eeeeeee");
+                        ERR("got nullptr as tile: %i %i; %i %i. for position %i %i", pos.x, pos.y, x, y, neighbor.x, neighbor.y);
                         foundNullTile = true;
                     }
                     i--;

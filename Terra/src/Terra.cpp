@@ -9,7 +9,7 @@ namespace Terra
     Terra::Terra()
     {
         Random::init();
-        window = std::make_unique<Window>(480, 270, "Terra");
+        window = std::make_unique<Window>(960, 540, "Terra", true);
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
     }
@@ -53,7 +53,7 @@ namespace Terra
 
             player->update(window.get(), deltaTime);
 
-            currentChunkPos = Renderer::getCamera()->getChunk();
+            currentChunkPos = Renderer::getCamera()->getChunkCentered();
             if (lastChunkPos != currentChunkPos) {
                 world->updateChunks();
                 INFO("UPDATING CHUNKS:  %i %i; %i %i", currentChunkPos.x, currentChunkPos.y, lastChunkPos.x, lastChunkPos.y);

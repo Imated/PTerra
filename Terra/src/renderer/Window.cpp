@@ -5,14 +5,12 @@ namespace Terra {
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void errorCallback(int error, const char* description);
 
-    Window::Window(int width, int height, const std::string& title, bool fullscreen)
-    {
+    Window::Window(int width, int height, const std::string& title, bool fullscreen) {
         INFO("Initializing...");
 
         glfwSetErrorCallback(errorCallback);
 
-        if (glfwInit() == GLFW_FALSE)
-        {
+        if (glfwInit() == GLFW_FALSE) {
             ASSERT("Failed to initialize GLFW! Aborting...");
             return;
         }
@@ -23,7 +21,7 @@ namespace Terra {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
         glfwWindowHint(GLFW_RED_BITS, mode->redBits);
@@ -32,8 +30,7 @@ namespace Terra {
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
         window = glfwCreateWindow(fullscreen ? mode->width : width, fullscreen? mode->height : height, title.c_str(), fullscreen ? monitor : nullptr, nullptr); //change NULL to monitor for full screen (no it doenst)
-        if (!window)
-        {
+        if (!window) {
             ASSERT("Failed to create window! Aborting...");
             glfwTerminate();
             return;
@@ -53,8 +50,7 @@ namespace Terra {
         params.height = height;
         DEBUG("Successfully Fetched Window Size of: %d, %d", width, height);
 
-        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-        {
+        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
             ASSERT("Failed to initialize OpenGL! Aborting...");
             glfwDestroyWindow(window);
             glfwTerminate();
@@ -67,14 +63,12 @@ namespace Terra {
         INFO("Initialized Successfully.");
     }
 
-    Window::~Window()
-    {
+    Window::~Window() {
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    static void windowSizeCallback(GLFWwindow* window, int width, int height)
-    {
+    static void windowSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
     }
 
@@ -83,13 +77,11 @@ namespace Terra {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
-    static void errorCallback(int error, const char* description)
-    {
+    static void errorCallback(int error, const char* description) {
         ERR("GLFW Error %d: %s", error, description);
     }
 
-    GLFWwindow* Window::getWindow() const
-    {
+    GLFWwindow* Window::getWindow() const {
         return window;
     }
 }
