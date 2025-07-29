@@ -5,7 +5,7 @@ namespace Terra {
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void errorCallback(int error, const char* description);
 
-    Window::Window(int width, int height, const std::string& title)
+    Window::Window(int width, int height, const std::string& title, bool fullscreen)
     {
         INFO("Initializing...");
 
@@ -31,7 +31,7 @@ namespace Terra {
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-        window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr); //change NULL to monitor for full screen (no it doenst)
+        window = glfwCreateWindow(fullscreen ? mode->width : width, fullscreen? mode->height : height, title.c_str(), fullscreen ? monitor : nullptr, nullptr); //change NULL to monitor for full screen (no it doenst)
         if (!window)
         {
             ASSERT("Failed to create window! Aborting...");

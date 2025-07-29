@@ -11,7 +11,7 @@ namespace Terra {
 
     class Window {
     public:
-        Window(int width, int height, const std::string& title = "Game");
+        Window(int width, int height, const std::string& title = "Game", bool fullscreen = true);
         ~Window();
 
         GLFWwindow* getWindow() const;

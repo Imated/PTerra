@@ -38,17 +38,15 @@ namespace Terra {
         tileShader->setInt("mainTexture", 0);
 
         //initial world gen
-        for (int i = -16; i < 16; i++) {
-            for (int j = -16; j < 16; j++) {
+        for (int i = -32; i < 32; i++) {
+            for (int j = -32; j < 32; j++) {
                 auto tmpvec = glm::ivec2(i, j);
-                worldData::worldChunks[tmpvec] = std::make_unique<Chunk>(generateChunk(tmpvec));
-                }
+                worldChunks[tmpvec] = generateChunk(tmpvec);
             }
         }
+    }
 
-    Chunk World::generateChunk(glm::ivec2 chunkPos) {
-        INFO("Generating chunk: %i, %i", chunkPos.x, chunkPos.y);
-
+    std::unique_ptr<Chunk> World::generateChunk(glm::ivec2 chunkPos) {
         glm::ivec2 worldBase = chunkPos * glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT);
         std::array<std::array<std::unique_ptr<Tile>, 16>, 16> chunkArray;
         for (int x = 0; x < 16; ++x) {
@@ -61,26 +59,22 @@ namespace Terra {
             }
         }
 
-        INFO("Generated");
-
-        return Chunk {
+        return std::make_unique<Chunk>(
             chunkPos,
             std::move(chunkArray)
-        };
+        );
     }
 
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
-        glm::vec2 translatedChunk = chunkPos - camChunk;
+        glm::ivec2 translatedChunk = chunkPos - Renderer::getCamera()->getChunk();
         INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
-        if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2) {
+        if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
             WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
             return nullptr;
         }
-
-        auto& chunk = chunkData::chunks[chunkPos.x + MAX_CHUNKS_X / 2][chunkPos.y + MAX_CHUNKS_Y / 2];
+        auto& chunk = chunkData::chunks[translatedChunk.x + MAX_CHUNKS_X / 2][translatedChunk.y + MAX_CHUNKS_Y / 2];
         if (!chunk) {
             WARN("Null chunk got.");
             return nullptr;
@@ -93,12 +87,11 @@ namespace Terra {
 
         return chunk->getTileAt(tilePos);
     }
-
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
         auto pos = localPos + centerChunk;
         INFO("Loading chunk %i, %i", pos.x, pos.y);
-        auto it = worldData::worldChunks.find(pos);
-        if (it != worldData::worldChunks.end()) {
+        auto it = worldChunks.find(pos);
+        if (it != worldChunks.end()) {
             chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2] = it->second.get();
         } else {
             WARN("Tried to load chunk that doesn't exist: %d, %d", pos.x, pos.y);
@@ -110,18 +103,21 @@ namespace Terra {
         glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
         INFO("Camera chunk: %i, %i", camChunk.x, camChunk.y);
 
+        // unload all chunks before loading
         for (int x = 0; x < MAX_CHUNKS_X; x++) {
             for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 chunkData::chunks[x][y] = nullptr;
             }
         }
 
+        //load all chunks around camera
         for (int x = -(MAX_CHUNKS_X / 2); x < MAX_CHUNKS_X / 2; x++) {
             for (int y = -(MAX_CHUNKS_Y / 2); y < MAX_CHUNKS_Y / 2; y++) {
                 chunkData::loadChunk({x, y}, camChunk);
             }
         }
 
+        // update all chunks
         for (auto& chunks: chunkData::chunks) {
             for (auto& chunk: chunks) {
                 if (!chunk) continue;

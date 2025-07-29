@@ -9,7 +9,7 @@ namespace Terra
     Terra::Terra()
     {
         Random::init();
-        window = std::make_unique<Window>(480, 256, "Terra");
+        window = std::make_unique<Window>(480, 270, "Terra");
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
     }
