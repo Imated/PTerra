@@ -71,10 +71,11 @@ namespace Terra {
 
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-
+        glm::ivec2 camChunk = Renderer::getCamera()->getChunk();
+        glm::vec2 translatedChunk = chunkPos - camChunk;
         INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
-        if (std::abs(chunkPos.x) > MAX_CHUNKS_X / 2 || std::abs(chunkPos.y) > MAX_CHUNKS_Y / 2) {
+        if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2) {
             WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
             return nullptr;
         }
