@@ -37,7 +37,7 @@ namespace Terra {
         tileShader = shaderPtr.get();
         tileShader->setInt("mainTexture", 0);
 
-        //initial world gen
+        //initial world gen    why tf is this a 64x64 square???
         for (int i = -32; i < 32; i++) {
             for (int j = -32; j < 32; j++) {
                 auto tmpvec = glm::ivec2(i, j);
@@ -48,14 +48,15 @@ namespace Terra {
 
     std::unique_ptr<Chunk> World::generateChunk(glm::ivec2 chunkPos) {
         glm::ivec2 worldBase = chunkPos * glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT);
-        std::array<std::array<std::unique_ptr<Tile>, 16>, 16> chunkArray;
-        for (int x = 0; x < 16; ++x) {
-            for (int y = 0; y < 16; ++y) {
-                if (x != y)
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> chunkArray;
+        for (int x = 0; x < CHUNK_WIDTH; ++x) {
+            for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+
+                if (x + y*CHUNK_WIDTH <= chunkPos.x)
                     chunkArray[x][y] = std::make_unique<AutoTile>(1, worldBase + glm::ivec2(x, y));
-                else {
+                else
                     chunkArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
-                }
+
             }
         }
 
@@ -68,15 +69,15 @@ namespace Terra {
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
         glm::ivec2 translatedChunk = chunkPos - Renderer::getCamera()->getChunk();
-        INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
+        //INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
         if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
-            WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
+            //WARN("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
             return nullptr;
         }
         auto& chunk = chunkData::chunks[translatedChunk.x + MAX_CHUNKS_X / 2][translatedChunk.y + MAX_CHUNKS_Y / 2];
         if (!chunk) {
-            WARN("Null chunk got.");
+            //WARN("Null chunk got.");
             return nullptr;
         }
 

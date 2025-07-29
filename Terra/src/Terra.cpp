@@ -54,9 +54,11 @@ namespace Terra
             player->update(window.get(), deltaTime);
 
             currentChunkPos = Renderer::getCamera()->getChunk();
-            if (lastChunkPos != currentChunkPos)
+            if (lastChunkPos != currentChunkPos) {
                 world->updateChunks();
-            lastChunkPos = currentChunkPos;
+                INFO("UPDATING CHUNKS:  %i %i; %i %i", currentChunkPos.x, currentChunkPos.y, lastChunkPos.x, lastChunkPos.y);
+                lastChunkPos = currentChunkPos;
+            }
 
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);

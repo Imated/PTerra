@@ -32,11 +32,10 @@ namespace Terra {
     glm::ivec2 Camera::getChunk() {
         glm::vec2 bl = cameraPos;
         // find screen center
-        glm::vec2 center = bl + glm::vec2(HORIZONTAL_TILES/2.f, VERTICAL_TILES/2.f);
+        glm::vec2 center = bl + glm::vec2(HORIZONTAL_TILES/2.f+CHUNK_WIDTH/2.f, VERTICAL_TILES/2.f+CHUNK_HEIGHT/2.f);
         // convert to chunk coords
-        glm::vec2 f = center / glm::vec2(CHUNK_WIDTH/2, CHUNK_HEIGHT/2);
-        //DEBUG("Camera chunk position: %f, %f",std::floor(f.x), std::floor(f.y));
-        return glm::ivec2(std::floor(f.x), std::floor(f.y));
-        DEBUG("Camera chunk position: %f, %f, %f, %f",std::floor(f.x), std::floor(f.y), cameraPos.x, cameraPos.y);
+        glm::vec2 f = center / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT);
+        //DEBUG("Chunk position; Camera position: %f, %f; %f, %f",std::floor(f.x), std::floor(f.y), cameraPos.x, cameraPos.y);
+        return {std::floor(f.x), std::floor(f.y)};
     }
 }

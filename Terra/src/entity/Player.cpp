@@ -31,7 +31,7 @@ namespace Terra {
         else
             currentAnimation = 0;
 
-        auto movementSpeed = 8.f;
+        auto movementSpeed = 32.f;
         position += direction * glm::vec2(deltaTime) * movementSpeed;
         camera->setPosition(glm::vec2(position.x - HORIZONTAL_TILES / 2, position.y - VERTICAL_TILES / 2));
         Entity::update(window, deltaTime);

@@ -8,7 +8,7 @@
 
 namespace Terra {
 
-    Chunk::Chunk(glm::ivec2 chunkPos, std::array<std::array<std::unique_ptr<Tile>, 16>, 16> tilesIn) : chunkPos(chunkPos), tiles(std::move(tilesIn)) { }
+    Chunk::Chunk(glm::ivec2 chunkPos, std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> tilesIn) : chunkPos(chunkPos), tiles(std::move(tilesIn)) { }
 
     Chunk::~Chunk() {
 
@@ -36,7 +36,8 @@ namespace Terra {
     }
 
     Tile* Chunk::getTileAt(glm::ivec2 pos) const {
-        if (pos.x < 0 || pos.y < 0 || pos.x >= 16 || pos.y >= 16)
+        if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
+        if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return nullptr;
         return tiles[pos.x][pos.y].get();
     }
