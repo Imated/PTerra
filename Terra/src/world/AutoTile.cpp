@@ -18,6 +18,7 @@ namespace Terra {
     void AutoTile::update() {
         int i = 7;
         hgfedcba = 0;
+        bool foundNullTile = false;
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {
@@ -27,12 +28,14 @@ namespace Terra {
                             hgfedcba |= (1 << i);
                         }
                     }
-                    else;
-                        //ERR("eeeeeee");
+                    else {
+                        ERR("eeeeeee");
+                        foundNullTile = true;
+                    }
                     i--;
                 }
             }
         }
-        currentFrame = getTileData()->stateLocations[Registry::getRuleTileId(hgfedcba)];
+        currentFrame = foundNullTile ? 1 : getTileData()->stateLocations[Registry::getRuleTileId(hgfedcba)];
     }
 }
