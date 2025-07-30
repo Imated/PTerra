@@ -17,6 +17,7 @@ namespace Terra {
         int i = 7;
         hgfedcba = 0;
         bool foundNullTile = false;
+        // loop through all neighbors and check if it has the same id as the current tile, iif it does then do some maths idk how the maths work u wrote it
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {

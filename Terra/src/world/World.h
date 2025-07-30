@@ -24,8 +24,8 @@ public:
     static Tile* getGlobalTileAt(glm::ivec2 worldPos);
     static std::unique_ptr<Chunk> generateChunk(glm::ivec2 chunkPos);
 
-    struct chunkData { //struct providing storage and methods for loading and unloading chunks
-        static inline std::array<std::array<Chunk*,MAX_CHUNKS_X>, MAX_CHUNKS_Y> chunks; //chunks actively updated and rendered
+    struct chunkData {
+        static inline std::array<std::array<Chunk*,MAX_CHUNKS_X>, MAX_CHUNKS_Y> chunks; // chunks that are actively updated and rendered
         static void loadChunk(glm::ivec2 worldPos, glm::ivec2 centerChunk);
         static std::vector<std::unique_ptr<Chunk>> loadChunksFromDisk(glm::ivec2 regionPos);
         static void createRegionFile(glm::ivec2 regionPos);
@@ -38,7 +38,7 @@ public:
         }
     };
 
-    static inline std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, IVec2Hasher> worldChunks;
+    static inline std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, IVec2Hasher> worldChunks; // stores 4 region files aka 32x32 grid of chunks around the camera
 
 private:
     Texture tileAtlas;
