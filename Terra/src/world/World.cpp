@@ -30,7 +30,7 @@ namespace Terra {
 
 
     void World::init() {
-        auto shaderPtr = ShaderLibrary::get("default");
+        auto shaderPtr = ShaderLibrary::get("tile");
         if (!shaderPtr) {
             ERR("Shader 'default' not loaded!");
             return;

@@ -9,17 +9,17 @@ namespace Terra
     Terra::Terra()
     {
         Random::init();
-        window = std::make_unique<Window>(960, 540, "Terra", true);
+        window = std::make_unique<Window>(960, 540, "Terra");
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
     }
 
     void Terra::init()
     {
-        ShaderLibrary::load("default",
+        ShaderLibrary::load("tile",
                             {
                                 {Vertex, "resources/default.vert"},
-                                {Fragment, "resources/default.frag"}
+                                {Fragment, "resources/tile.frag"}
                             });
         ShaderLibrary::load("player",
                             {

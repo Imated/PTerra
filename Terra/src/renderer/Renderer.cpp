@@ -21,7 +21,7 @@ namespace Terra {
 
     Renderer::~Renderer()
     {
-        ShaderLibrary::free("default");
+        ShaderLibrary::free("tile");
     }
 
     void Renderer::renderQuad()
