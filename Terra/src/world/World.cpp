@@ -75,13 +75,14 @@ namespace Terra {
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
         glm::ivec2 translatedChunk = chunkPos - Renderer::getCamera()->getChunk();
+        //INFO("trans chunk %i %i", translatedChunk.x, translatedChunk.y);
         //INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
-        if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
-            DEBUG("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
-            return nullptr;
-        }
-        auto& chunk = chunkData::chunks[translatedChunk.x + MAX_CHUNKS_X / 2][translatedChunk.y + MAX_CHUNKS_Y / 2];
+        // if (std::abs(translatedChunk.x) > MAX_CHUNKS_X / 2.0 || std::abs(translatedChunk.y) > MAX_CHUNKS_Y / 2.0) {
+        //     DEBUG("OOB chunk got., %i, %i", chunkPos.x, chunkPos.y);
+        //     return nullptr;
+        // }
+        auto& chunk = worldChunks[chunkPos];
         if (!chunk) {
             DEBUG("Null chunk got.");
             return nullptr;
@@ -152,7 +153,7 @@ namespace Terra {
                 int16_t chunkY = worldChunkPos.y;
                 regionData.append(reinterpret_cast<const char*>(&chunkX), sizeof(chunkX));
                 regionData.append(reinterpret_cast<const char*>(&chunkY), sizeof(chunkY));
-                INFO("Saving chunk at world pos: (%i, %i)", chunkX, chunkY);
+                //INFO("Saving chunk at world pos: (%i, %i)", chunkX, chunkY);
 
                 auto chunk = generateChunk(worldChunkPos);
 
@@ -190,6 +191,7 @@ namespace Terra {
         glm::ivec2 minRegion = floor(glm::vec2(minChunk) / glm::vec2(REGION_X, REGION_Y));
         glm::ivec2 maxRegion = floor(glm::vec2(maxChunk) / glm::vec2(REGION_X, REGION_Y));
 
+        //INFO("AAAAAAAAAAA %i, %i, %i, %i", minRegion.x, minRegion.y, maxRegion.x, maxRegion.y);
         for (int rx = minRegion.x; rx <= maxRegion.x; rx++) {
             for (int ry = minRegion.y; ry <= maxRegion.y; ry++) {
                 glm::ivec2 region = {rx, ry};
@@ -235,7 +237,7 @@ namespace Terra {
                 for (int x = 0; x < CHUNK_WIDTH; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         chunk->getTileAt({x, y})->update();
-                        INFO("Updating tile %d,%d with ID %d", x, y, chunk->getTileAt({x, y})->getId());
+                       // INFO("Updating tile %d,%d with ID %d", x, y, chunk->getTileAt({x, y})->getId());
                     }
                 }
             }
