@@ -48,8 +48,6 @@ namespace Terra {
 
         if (!Utils::fileExists("data/regions"))
             Utils::createDirectory("data/regions");
-        if (!Utils::fileExists("resources"))
-            Utils::createDirectory("resources");
 
         chunkData::createRegionFile({0, 0});
         chunkData::createRegionFile({-1, 0});
