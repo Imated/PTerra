@@ -70,11 +70,13 @@ namespace Terra {
     // ngl even idk how ts works
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        auto& chunk = worldChunks[chunkPos];
-        if (!chunk) {
+        auto it = worldChunks.find(chunkPos);
+        if (it == worldChunks.end()) {
             DEBUG("Null chunk got.");
             return nullptr;
         }
+
+        Chunk* chunk = it->second.get();
 
         glm::ivec2 tilePos = {
             (worldPos.x % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH,
