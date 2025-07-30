@@ -57,7 +57,7 @@ namespace Terra {
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
 
-                if /*(x + y*CHUNK_WIDTH <= chunkPos.x)*/ /*(x != y)*/ ((x-8)*(x-8)+(y-8)*(y-8) >= 32)
+                if (pow(x, y)< 55)
                     chunkArray[x][y] = std::make_unique<AutoTile>(1, worldBase + glm::ivec2(x, y));
                 else
                     chunkArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
@@ -181,22 +181,24 @@ namespace Terra {
         glm::ivec2 regionPos = floor(glm::vec2(camChunk) / glm::vec2(REGION_X, REGION_Y));
         glm::ivec2 regionBase = regionPos * glm::ivec2(REGION_X);
         glm::ivec2 regionEnd = regionBase + glm::ivec2(REGION_Y - 1);
-        bool nearEdge =
-            camChunk.x < regionBase.x + 4 || camChunk.x > regionEnd.x - 4 ||
-            camChunk.y < regionBase.y + 4 || camChunk.y > regionEnd.y - 4;
 
         // if near edge of a region, load the next region in
-        if (nearEdge) {
-            for (int rx = -1; rx < 1; rx++) {
-                for (int ry = -1; ry < 1; ry++) {
-                    glm::ivec2 nearbyRegion = regionPos + glm::ivec2(rx, ry);
-                    std::string filename = "region_" + std::to_string(nearbyRegion.x) + "_" + std::to_string(nearbyRegion.y) + ".dat";
-                    if (!Utils::fileExists(filename.c_str()))
-                        chunkData::createRegionFile(nearbyRegion);
-                    auto chunksToCache = chunkData::loadChunksFromDisk(nearbyRegion);
-                    for (auto& chunk : chunksToCache)
-                        worldChunks[chunk->chunkPos] = std::move(chunk);
-                }
+        glm::ivec2 minChunk = camChunk - glm::ivec2(MAX_CHUNKS_X / 2, MAX_CHUNKS_Y / 2);
+        glm::ivec2 maxChunk = camChunk + glm::ivec2(MAX_CHUNKS_X / 2, MAX_CHUNKS_Y / 2);
+
+        // get the region bounds covered by visible chunks
+        glm::ivec2 minRegion = floor(glm::vec2(minChunk) / glm::vec2(REGION_X, REGION_Y));
+        glm::ivec2 maxRegion = floor(glm::vec2(maxChunk) / glm::vec2(REGION_X, REGION_Y));
+
+        for (int rx = minRegion.x; rx <= maxRegion.x; rx++) {
+            for (int ry = minRegion.y; ry <= maxRegion.y; ry++) {
+                glm::ivec2 region = {rx, ry};
+                std::string filename = "region_" + std::to_string(rx) + "_" + std::to_string(ry) + ".dat";
+                if (!Utils::fileExists(filename.c_str()))
+                    chunkData::createRegionFile(region);
+                auto chunksToCache = chunkData::loadChunksFromDisk(region);
+                for (auto& chunk : chunksToCache)
+                    worldChunks[chunk->chunkPos] = std::move(chunk);
             }
         }
 
@@ -233,6 +235,7 @@ namespace Terra {
                 for (int x = 0; x < CHUNK_WIDTH; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         chunk->getTileAt({x, y})->update();
+                        INFO("Updating tile %d,%d with ID %d", x, y, chunk->getTileAt({x, y})->getId());
                     }
                 }
             }
