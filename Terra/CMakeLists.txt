@@ -42,7 +42,7 @@ target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC GLFW_INCLUDE_NONE=1)
 
 if(PRODUCTION_BUILD)
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1) 
-	set(CMAKE_CXX_FLAGS "-O2 -march=native -std=c++11 -Wall")# release mode
+	set(CMAKE_CXX_FLAGS "-O2 -march=native -std=c++20 -Wall")# release mode
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
