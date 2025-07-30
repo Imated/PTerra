@@ -17,7 +17,7 @@ namespace Terra {
         registerTile(TileData
             {
                 1,
-                std::vector<uint8_t> {126, 127, 128, 105, 106, 107, 84, 85, 86, 129, 108, 87, 63, 64, 65, 66}
+                std::vector<uint8_t> {126, 127, 128, 105, 106, 107, 84, 85, 86, 129, 108, 87, 63, 64, 65, 66, 130, 131, 109, 110}
             });
         ruleRegistry.reserve(256);
         setMap("X1X01X0X", 0);
@@ -36,6 +36,10 @@ namespace Terra {
         setMap("X0X11X0X", 13);
         setMap("X0X10X0X", 14);
         setMap("X0X00X0X", 15);
+        setMap("11011111", 16);
+        setMap("01111111", 17);
+        setMap("11111110", 18);
+        setMap("11111011", 19);
     }
 
     void Registry::registerTile(const TileData& tile) {
