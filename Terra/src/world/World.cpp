@@ -45,6 +45,10 @@ namespace Terra {
         //         worldChunks[tmpvec] = generateChunk(tmpvec);
         //     }
         // }
+
+        if (!Utils::fileExists("data/regions"))
+            Utils::createDirectory("data/regions");
+
         chunkData::createRegionFile({0, 0});
         chunkData::createRegionFile({-1, 0});
         chunkData::createRegionFile({0, -1});
