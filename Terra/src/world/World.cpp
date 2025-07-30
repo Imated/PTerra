@@ -107,7 +107,7 @@ namespace Terra {
     }
 
     std::vector<std::unique_ptr<Chunk>> World::chunkData::loadChunksFromDisk(glm::ivec2 regionPos) {
-        std::string regionFileName = "region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
+        std::string regionFileName = "data/regions/region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
         std::string region = Utils::readFile(regionFileName.c_str());
 
         std::vector<std::unique_ptr<Chunk>> chunks;
@@ -144,7 +144,7 @@ namespace Terra {
     }
 
     void World::chunkData::createRegionFile(glm::ivec2 regionPos) {
-        std::string regionFileName = "region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
+        std::string regionFileName = "data/regions/region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
         std::string regionData;
         for (int cx = 0; cx < REGION_X; ++cx) {
             for (int cy = 0; cy < REGION_Y; ++cy) {
@@ -195,7 +195,7 @@ namespace Terra {
         for (int rx = minRegion.x; rx <= maxRegion.x; rx++) {
             for (int ry = minRegion.y; ry <= maxRegion.y; ry++) {
                 glm::ivec2 region = {rx, ry};
-                std::string filename = "region_" + std::to_string(rx) + "_" + std::to_string(ry) + ".dat";
+                std::string filename = "data/regions/region_" + std::to_string(rx) + "_" + std::to_string(ry) + ".dat";
                 if (!Utils::fileExists(filename.c_str()))
                     chunkData::createRegionFile(region);
                 auto chunksToCache = chunkData::loadChunksFromDisk(region);

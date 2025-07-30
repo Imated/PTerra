@@ -47,6 +47,10 @@ if(PRODUCTION_BUILD)
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
 			$<TARGET_FILE_DIR:terra>/resources)
+	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_SOURCE_DIR}/data
+			$<TARGET_FILE_DIR:terra>/data)
 else()
 	# This is useful to get an ASSETS_PATH in your IDE during development
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0) 
@@ -55,6 +59,10 @@ else()
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
 			$<TARGET_FILE_DIR:terra>/resources)
+	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_SOURCE_DIR}/data
+			$<TARGET_FILE_DIR:terra>/data)
 endif()
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )

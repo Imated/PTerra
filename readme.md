@@ -8,11 +8,20 @@ Terra is a 2D game with a tile based map. It's focused on survival, automation a
 The entirety of Terra is contained in the "Terra" folder. This folder is structured to have 3 subfolders: libs, resources and src.  
 It also includes various utility files like cmake, the license and other Terra.* files.
 
+[`data`](#the-data-folder) contains all the data saved by the game. For now, this is only the region files.  
 [`libs`](#the-libs-folder) contains the third-party or external libraries used by this project.  
 [`resources`](#the-resources-folder) contains the files that are not c++ code and made by us. This includes images and shaders.  
 [`src`](#the-src-folder) contains the actual code run by the program. This folder contains the main and terra files. 
 It also contains sub-folders for organization.
 
+
+## The `data` folder
+This folder is meant to store all the data that Terra saves.  
+For now, this folder only contains one sub-folder called "regions". In the future, this folder will store the player data (position, health, inventory), entity data, achievements (if we wish to add) and world data (not only region files but also time and seed).
+This folder contains:
+[`regions`](#the-regions-folder) which contains the saved region files.
+### The `regions` folder
+This folder is meant to store all the `region_<x>_<y>.dat`. These files are clumps of 16x16 chunks that get stored to disk so they don't have to get regenerated all the time.
 
 ## The `libs` folder
 This is a very simple folder. All it contains is:  
