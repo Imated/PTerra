@@ -78,7 +78,7 @@ namespace Terra {
 
     Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
-        glm::ivec2 translatedChunk = chunkPos - Renderer::getCamera()->getChunk();
+        //glm::ivec2 translatedChunk = chunkPos - Renderer::getCamera()->getChunk();
         //INFO("trans chunk %i %i", translatedChunk.x, translatedChunk.y);
         //INFO("Getting tile at: (%i, %i) - (%i, %i)", worldPos.x, worldPos.y, chunkPos.x, chunkPos.y);
 
@@ -116,7 +116,7 @@ namespace Terra {
 
         std::vector<std::unique_ptr<Chunk>> chunks;
         size_t offset = 0;
-        auto camChunk = Renderer::getCamera()->getChunk();
+        //auto camChunk = Renderer::getCamera()->getChunk();
 
         for (int x = 0; x < REGION_X; ++x) {
             for (int y = 0; y < REGION_Y; ++y) {
@@ -183,9 +183,6 @@ namespace Terra {
 
     void World::updateChunks() {
         glm::ivec2 camChunk = Renderer::getCamera()->getChunkCentered();
-        glm::ivec2 regionPos = floor(glm::vec2(camChunk) / glm::vec2(REGION_X, REGION_Y));
-        glm::ivec2 regionBase = regionPos * glm::ivec2(REGION_X);
-        glm::ivec2 regionEnd = regionBase + glm::ivec2(REGION_Y - 1);
 
         // if near edge of a region, load the next region in
         glm::ivec2 minChunk = camChunk - glm::ivec2(MAX_CHUNKS_X / 2, MAX_CHUNKS_Y / 2);
@@ -220,8 +217,8 @@ namespace Terra {
         }
 
         // unload all chunks before loading
-        for (int x = 0; x <= MAX_CHUNKS_X; x++) {
-            for (int y = 0; y <= MAX_CHUNKS_Y; y++) {
+        for (int x = 0; x < MAX_CHUNKS_X; x++) {
+            for (int y = 0; y < MAX_CHUNKS_Y; y++) {
                 chunkData::chunks[x][y] = nullptr;
             }
         }

@@ -39,8 +39,8 @@ namespace Terra
         gameLoop();
     }
 
-    double totalTime = 0.0;
-    int frameCount = 0;
+    //double totalTime = 0.0;
+    //int frameCount = 0;
     glm::vec2 lastChunkPos = glm::vec2(9999);
     glm::vec2 currentChunkPos = glm::vec2(0);
 
@@ -69,10 +69,10 @@ namespace Terra
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
 
-            totalTime += deltaTime;
-            frameCount++;
+            //totalTime += deltaTime;
+            //frameCount++;
 
-            double avgFPS = frameCount / totalTime;
+            //double avgFPS = frameCount / totalTime;
 
             //std::cout << "\rFPS: " << avgFPS << "          ";
         }

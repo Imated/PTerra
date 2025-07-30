@@ -32,7 +32,7 @@ namespace Terra {
         Texture* atlas = nullptr;
         Shader* shader = nullptr;
     private:
-        _Float16 timeBeforeFrame = 0;
-        _Float16 frameTimer = 0;
+        float timeBeforeFrame = 0;
+        float frameTimer = 0;
     };
 }

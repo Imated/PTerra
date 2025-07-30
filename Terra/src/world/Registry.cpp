@@ -55,7 +55,7 @@ namespace Terra {
         try {
             return ruleRegistry.at(hgfedcba);
 
-        } catch (std::out_of_range e) {
+        } catch (const std::out_of_range& e) {
             //ASSERT("Could not find matching 'hgfedcba' in map: %i", hgfedcba);
         }
         return 65;

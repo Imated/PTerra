@@ -1,5 +1,3 @@
-#pragma once
-
 #include "AutoTile.h"
 #include "misc/Logger.h"
 #include "Chunk.h"
