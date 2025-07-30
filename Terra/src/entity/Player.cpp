@@ -3,6 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/ext/quaternion_geometric.hpp"
 #include "misc/Constants.h"
+#include "misc/Utility.h"
 #include "renderer/Renderer.h"
 #include "renderer/ShaderLibrary.h"
 #include "renderer/Window.h"
@@ -17,13 +18,13 @@ namespace Terra {
         Entity::init();
     }
 
-    void Player::update(Window* window, float deltaTime) {
-        auto direction = glm::vec2(0);
-        direction.x += glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS;
-        direction.x -= glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS;
-        direction.y += glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS;
-        direction.y -= glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS;
+    void Player::handleKeys(Window *window) {
+        direction.x = static_cast<float>(Utils::isPressed(window, GLFW_KEY_D) - Utils::isPressed(window, GLFW_KEY_A));
+        direction.y = static_cast<float>(Utils::isPressed(window, GLFW_KEY_W) - Utils::isPressed(window, GLFW_KEY_S));
+    }
 
+    void Player::update(Window* window, float deltaTime) {
+        handleKeys(window);
         if (direction != glm::vec2(0)) {
             direction = glm::normalize(glm::vec2(direction));
             currentAnimation = 1;
