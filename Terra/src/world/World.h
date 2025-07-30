@@ -27,6 +27,8 @@ public:
     struct chunkData { //struct providing storage and methods for loading and unloading chunks
         static inline std::array<std::array<Chunk*,MAX_CHUNKS_X>, MAX_CHUNKS_Y> chunks; //chunks actively updated and rendered
         static void loadChunk(glm::ivec2 worldPos, glm::ivec2 centerChunk);
+        static std::vector<std::unique_ptr<Chunk>> loadChunksFromDisk(glm::ivec2 regionPos);
+        static void createRegionFile(glm::ivec2 regionPos);
     };
     static chunkData loadedChunks;
 

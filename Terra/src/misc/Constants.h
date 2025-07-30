@@ -13,3 +13,7 @@ constexpr float LAYER_BEHIND_PLAYER = 0.1f;
 constexpr float LAYER_ENTITY = 0.2f;
 constexpr float LAYER_OVER_PLAYER = 0.3f;
 constexpr float LAYER_FOREGROUND = 0.4f;
+constexpr int REGION_X = 16;
+constexpr int REGION_Y = 16;
+constexpr int TILE_TYPE_AUTO_TILE = 1;
+constexpr int TILE_TYPE_TILE = 0;

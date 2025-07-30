@@ -1,11 +1,14 @@
 ﻿#pragma once
+#include <filesystem>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <ios>
+#include <string.h>
+
 #include "Logger.h"
 
-
+// fix this frfr
 class Utils
 {
 public:
@@ -24,5 +27,21 @@ public:
         }
         ASSERT(("Unable to open file with the name of '" + std::string(filename) + "'").c_str());
         return "";
+    }
+
+    static void writeFile(const char* filename, const char* contents, size_t size)
+    {
+        std::ofstream out(filename, std::ios::binary);
+        if(out.is_open())
+        {
+            out.write(contents, size);
+        }
+        else
+            ASSERT(("Unable to open file with the name of '" + std::string(filename) + "'").c_str());
+    }
+
+    static bool fileExists(const char* filename) {
+        INFO("Checking if file exists: %s", filename);
+        return std::filesystem::exists(filename);
     }
 };

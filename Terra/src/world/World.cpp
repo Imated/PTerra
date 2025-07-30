@@ -16,6 +16,7 @@
 #include <unordered_set>
 
 #include "AutoTile.h"
+#include "misc/Utility.h"
 #include "renderer/Camera.h"
 
 namespace Terra {
@@ -37,13 +38,17 @@ namespace Terra {
         tileShader = shaderPtr.get();
         tileShader->setInt("mainTexture", 0);
 
-        //initial world gen    why tf is this a 64x64 square???
-        for (int i = -32; i < 32; i++) {
-            for (int j = -32; j < 32; j++) {
-                auto tmpvec = glm::ivec2(i, j);
-                worldChunks[tmpvec] = generateChunk(tmpvec);
-            }
-        }
+        //initial world gen    why tf is this a 64x64 square??? i wanted to be able to walk far >:C
+        // for (int i = -8; i < 8; i++) {
+        //     for (int j = -8; j < 8; j++) {
+        //         auto tmpvec = glm::ivec2(i, j);
+        //         worldChunks[tmpvec] = generateChunk(tmpvec);
+        //     }
+        // }
+        chunkData::createRegionFile({0, 0});
+        chunkData::createRegionFile({-1, 0});
+        chunkData::createRegionFile({0, -1});
+        chunkData::createRegionFile({-1, -1});
     }
 
     std::unique_ptr<Chunk> World::generateChunk(glm::ivec2 chunkPos) {
@@ -100,10 +105,111 @@ namespace Terra {
         }
     }
 
-    void World::updateChunks() {
+    std::vector<std::unique_ptr<Chunk>> World::chunkData::loadChunksFromDisk(glm::ivec2 regionPos) {
+        std::string regionFileName = "region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
+        std::string region = Utils::readFile(regionFileName.c_str());
 
+        std::vector<std::unique_ptr<Chunk>> chunks;
+        size_t offset = 0;
+        auto camChunk = Renderer::getCamera()->getChunk();
+
+        for (int x = 0; x < REGION_X; ++x) {
+            for (int y = 0; y < REGION_Y; ++y) {
+                int16_t chunkX;
+                int16_t chunkY;
+                std::memcpy(&chunkX, region.data() + offset, sizeof(int16_t)); offset += sizeof(int16_t);
+                std::memcpy(&chunkY, region.data() + offset, sizeof(int16_t)); offset += sizeof(int16_t);
+                //INFO("Loading chunk at world pos: (%i, %i)", chunkX, chunkY);
+
+                std::array<std::array<std::unique_ptr<Tile>, CHUNK_WIDTH>, CHUNK_HEIGHT> tiles;
+
+                for (int tileX = 0; tileX < CHUNK_WIDTH; ++tileX) {
+                    for (int tileY = 0; tileY < CHUNK_HEIGHT; ++tileY) {
+                        bool tileType;
+                        uint16_t tileId;
+                        std::memcpy(&tileType, region.data() + offset, sizeof(bool)); offset += sizeof(bool);
+                        std::memcpy(&tileId, region.data() + offset, sizeof(uint16_t)); offset += sizeof(uint16_t);
+                        if (tileType == TILE_TYPE_AUTO_TILE)
+                            tiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(tileX, tileY));
+                        else
+                            tiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(tileX, tileY));
+                    }
+                }
+
+                chunks.push_back(std::make_unique<Chunk>(glm::ivec2(chunkX, chunkY), std::move(tiles)));
+            }
+        }
+        return chunks;
+    }
+
+    void World::chunkData::createRegionFile(glm::ivec2 regionPos) {
+        std::string regionFileName = "region_" + std::to_string(regionPos.x) + "_" + std::to_string(regionPos.y) + ".dat";
+        std::string regionData;
+        for (int cx = 0; cx < REGION_X; ++cx) {
+            for (int cy = 0; cy < REGION_Y; ++cy) {
+                glm::ivec2 worldChunkPos = regionPos * glm::ivec2(REGION_X, REGION_Y) + glm::ivec2(cx, cy);
+                int16_t chunkX = worldChunkPos.x;
+                int16_t chunkY = worldChunkPos.y;
+                regionData.append(reinterpret_cast<const char*>(&chunkX), sizeof(chunkX));
+                regionData.append(reinterpret_cast<const char*>(&chunkY), sizeof(chunkY));
+                INFO("Saving chunk at world pos: (%i, %i)", chunkX, chunkY);
+
+                auto chunk = generateChunk(worldChunkPos);
+
+                for (int tx = 0; tx < CHUNK_WIDTH; ++tx) {
+                    for (int ty = 0; ty < CHUNK_HEIGHT; ++ty) {
+                        auto tile = chunk->getTileAt({tx, ty});
+                        bool type = 0;
+                        if (dynamic_cast<AutoTile*>(tile) != nullptr)
+                            type = TILE_TYPE_AUTO_TILE;
+                        else
+                            type = TILE_TYPE_TILE;
+                        uint16_t id = tile->getId();
+                        regionData.append(reinterpret_cast<const char*>(&type), sizeof(type));
+                        regionData.append(reinterpret_cast<const char*>(&id), sizeof(id));
+                    }
+                }
+            }
+        }
+
+        Utils::writeFile(regionFileName.c_str(), regionData.data(), regionData.size());
+        INFO("Created new region file: %s", regionFileName.c_str());
+    }
+
+    void World::updateChunks() {
         glm::ivec2 camChunk = Renderer::getCamera()->getChunkCentered();
-        DEBUG("Camera chunk: %i, %i", camChunk.x, camChunk.y);
+        glm::ivec2 regionPos = floor(glm::vec2(camChunk) / glm::vec2(REGION_X, REGION_Y));
+        glm::ivec2 regionBase = regionPos * glm::ivec2(REGION_X);
+        glm::ivec2 regionEnd = regionBase + glm::ivec2(REGION_Y - 1);
+        bool nearEdge =
+            camChunk.x < regionBase.x + 4 || camChunk.x > regionEnd.x - 4 ||
+            camChunk.y < regionBase.y + 4 || camChunk.y > regionEnd.y - 4;
+
+        // if near edge of a region, load the next region in
+        if (nearEdge) {
+            for (int rx = -1; rx < 1; rx++) {
+                for (int ry = -1; ry < 1; ry++) {
+                    glm::ivec2 nearbyRegion = regionPos + glm::ivec2(rx, ry);
+                    std::string filename = "region_" + std::to_string(nearbyRegion.x) + "_" + std::to_string(nearbyRegion.y) + ".dat";
+                    if (!Utils::fileExists(filename.c_str()))
+                        chunkData::createRegionFile(nearbyRegion);
+                    auto chunksToCache = chunkData::loadChunksFromDisk(nearbyRegion);
+                    for (auto& chunk : chunksToCache)
+                        worldChunks[chunk->chunkPos] = std::move(chunk);
+                }
+            }
+        }
+
+        //unload most of old region (most not all beacuse you are in part of this region so if you unloaded all you would unload the chunks you are in)
+        int halfSize = 24;
+
+        for (auto it = worldChunks.begin(); it != worldChunks.end(); ) {
+            glm::ivec2 pos = it->first;
+            if (std::abs(pos.x - camChunk.x) > halfSize || std::abs(pos.y - camChunk.y) > halfSize)
+                it = worldChunks.erase(it);
+            else
+                ++it;
+        }
 
         // unload all chunks before loading
         for (int x = 0; x <= MAX_CHUNKS_X; x++) {
