@@ -33,10 +33,8 @@ namespace Terra {
             direction = glm::normalize(glm::vec2(direction));
             currentAnimation = 1;
             footstepSource->setPosition(position);
-            auto pitch = Random::get<float>(0.8f, 1.2f);
-            auto gain = Random::get<float>(0.7f, 1.0f);
-            footstepSource->setPitch(pitch);
-            footstepSource->setGain(gain);
+            footstepSource->setPitch(Random::get<float>(0.8f, 1.2f));
+            footstepSource->setGain(Random::get<float>(0.7f, 1.0f));
             if (!footstepSource->isPlaying())
                 footstepSource->resume();
         }
