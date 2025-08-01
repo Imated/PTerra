@@ -14,6 +14,7 @@ namespace Terra {
     }
 
     void AutoTile::update() {
+        //DEBUG("updating tile %i %i", pos.x, pos.y);
         int i = 7;
         hgfedcba = 0;
         bool foundNullTile = false;
@@ -29,7 +30,8 @@ namespace Terra {
                         }
                     }
                     else {
-                        DEBUG("got nullptr as tile: %i %i; %i %i. for position %i %i", pos.x, pos.y, x, y, neighbor.x, neighbor.y);
+                        //DEBUG("Looking for tile at position %i %i", neighbor.x, neighbor.y);
+                        //DEBUG("got nullptr as tile: %i %i; %i %i. for position %i %i", pos.x, pos.y, x, y, neighbor.x, neighbor.y);
                         foundNullTile = true;
                     }
                     i--;

@@ -53,10 +53,10 @@ namespace Terra
 
             player->update(window.get(), deltaTime);
 
-            currentChunkPos = Renderer::getCamera()->getChunkCentered();
+            currentChunkPos = Renderer::getCamera()->getChunk();
             if (lastChunkPos != currentChunkPos) {
                 world->updateChunks();
-                INFO("UPDATING CHUNKS:  %i %i; %i %i", currentChunkPos.x, currentChunkPos.y, lastChunkPos.x, lastChunkPos.y);
+                INFO("UPDATING CHUNKS:  %f %f; %f %f", currentChunkPos.x, currentChunkPos.y, lastChunkPos.x, lastChunkPos.y);
                 lastChunkPos = currentChunkPos;
             }
 
