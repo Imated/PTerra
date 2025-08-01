@@ -1,5 +1,8 @@
 ﻿#include "Terra.h"
 
+#include "audio/Audio.h"
+#include "audio/AudioBuffer.h"
+#include "audio/AudioSource.h"
 #include "misc/Constants.h"
 #include "misc/Random.h"
 #include "renderer/ShaderLibrary.h"
@@ -28,6 +31,14 @@ namespace Terra
                             });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
+        INFO("Audio init");
+        Audio::init();
+        INFO("Audio inited");
+        //Audio::loadSound("test", "resources/aaaaaa.mp3");
+        Audio::playSound("test");
+        DEBUG("eee");
+        Audio::playSound("test", 5.f);
+        INFO("Audio inited sound");
         glfwSwapInterval(1);
         world->init();
         player->init();
