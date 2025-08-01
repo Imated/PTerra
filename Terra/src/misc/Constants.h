@@ -17,3 +17,5 @@ constexpr int REGION_X = 16;
 constexpr int REGION_Y = 16;
 constexpr int TILE_TYPE_AUTO_TILE = 1;
 constexpr int TILE_TYPE_TILE = 0;
+constexpr int NUM_AUDIO_BUFFERS = 8;
+constexpr size_t BUFFER_SAMPLES = 8192;

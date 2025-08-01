@@ -34,8 +34,18 @@ namespace Terra {
         }
     }
 
-    void Audio::loadSound(std::string id, const char *filename) {
-        sourcesMap[id] = buffer->createSound(filename);
+    void Audio::update() {
+        for (auto& source: sourcesPool) {
+            if (source->streaming())
+                source->updateStream();
+        }
+    }
+
+    void Audio::loadSound(std::string id, const char *filename, bool streamed) {
+        if (!streamed)
+            sourcesMap[id] = buffer->createSound(filename);
+        else
+            streamMap[id] = buffer->createLongBufferSound(filename);
     }
 
     void Audio::unloadSound(std::string id) {
@@ -58,7 +68,10 @@ namespace Terra {
             return nullptr;
         }
         auto& source = sourcesPool[sourceIndex];
-        source->play(getSound(soundID), pitch, gain, position, velocity, loop);
+        if (streamMap.contains(soundID))
+            source->startStreaming(streamMap[soundID]);
+        else
+            source->play(sourcesMap[soundID], pitch, gain, position, velocity, loop);
         return source.get();
     }
 

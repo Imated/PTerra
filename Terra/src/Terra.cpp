@@ -32,9 +32,10 @@ namespace Terra
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
         Audio::init();
-        Audio::loadSound("test", "resources/aaaaaa.mp3");
-        Audio::playSound("test");
-        Audio::playSound("test", 5.f);
+        Audio::loadSound("test", "resources/aaaaaa.wav", true);
+        Audio::playSound("test", 2.f);
+        ERR("ee %s", alGetError());
+        INFO("A");
         glfwSwapInterval(1);
         world->init();
         player->init();
@@ -70,6 +71,8 @@ namespace Terra
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);
             player->render(vp);
+
+            Audio::update();
 
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();

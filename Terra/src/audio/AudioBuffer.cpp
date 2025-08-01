@@ -2,6 +2,7 @@
 
 #include <cinttypes>
 
+#include "AudioSource.h"
 #include "sndfile.h"
 #include "misc/Logger.h"
 #include "OpenAL/include/AL/alext.h"
@@ -101,5 +102,34 @@ namespace Terra {
     AudioBuffer::~AudioBuffer() {
         alDeleteBuffers(soundEffectBuffers.size(), soundEffectBuffers.data());
         soundEffectBuffers.clear();
+    }
+
+    StreamData AudioBuffer::createLongBufferSound(const char *filename) {
+        StreamData data {};
+        data.file = sf_open(filename, SFM_READ, &data.info);
+        if (!data.file) {
+            ERR("Failed to open stream file: %s", sf_strerror(nullptr));
+            return data;
+        }
+
+        data.format = AL_NONE;
+        if (data.info.channels == 1)
+            data.format = AL_FORMAT_MONO16;
+        else if (data.info.channels == 2)
+            data.format = AL_FORMAT_STEREO16;
+        else if (data.info.channels == 3) {
+            if (sf_command(data.file, SFC_WAVEX_GET_AMBISONIC, nullptr, 0) == SF_AMBISONIC_B_FORMAT)
+                data.format = AL_FORMAT_BFORMAT2D_16;
+        }
+        else if (data.info.channels == 4) {
+            if (sf_command(data.file, SFC_WAVEX_GET_AMBISONIC, nullptr, 0) == SF_AMBISONIC_B_FORMAT)
+                data.format = AL_FORMAT_BFORMAT3D_16;
+        }
+        if (!data.format) {
+            ERR("Could not get format from sound file %s", filename);
+            sf_close(data.file);
+        }
+
+        return data;
     }
 }
