@@ -26,6 +26,7 @@ namespace Terra {
         void updateStream();
 
         ALuint getSource();
+        bool isPlayingOrPaused() const;
         bool isPlaying() const;
         bool streaming() const;
 
@@ -33,11 +34,11 @@ namespace Terra {
         void pause() const;
         void resume() const;
 
-        void setPitch(float pitch) { this->pitch = pitch; }
-        void setGain(float gain) { this->gain = gain; }
-        void setPosition(glm::vec2 position) { this->position = position; }
-        void setVelocity(glm::vec2 velocity) { this->velocity = velocity; }
-        void setLoop(bool loop) { this->loop = loop; }
+        void setPitch(float pitch) { this->pitch = pitch; alSourcef(source, AL_PITCH, pitch); }
+        void setGain(float gain) { this->gain = gain; alSourcef(source, AL_GAIN, gain); }
+        void setPosition(glm::vec2 position) { this->position = position; alSource3f(source, AL_POSITION, position.x, 0, position.y); }
+        void setVelocity(glm::vec2 velocity) { this->velocity = velocity; alSource3f(source, AL_VELOCITY, velocity.x, 0, velocity.y); }
+        void setLoop(bool loop) { this->loop = loop; alSourcei(source, AL_LOOPING, loop); }
 
         void getPitch(float& pitch) const { pitch = this->pitch; }
         void getGain(float& gain) const { gain = this->gain; }

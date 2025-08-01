@@ -85,7 +85,7 @@ namespace Terra {
 
     int Audio::getFreeAudioSource() {
         auto it = std::ranges::find_if(sourcesPool, [](const std::unique_ptr<AudioSource>& source) {
-            return !source->isPlaying();
+            return !source->isPlayingOrPaused();
         });
 
         if (it != sourcesPool.end())

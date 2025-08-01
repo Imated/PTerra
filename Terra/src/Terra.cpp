@@ -32,10 +32,8 @@ namespace Terra
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
         Audio::init();
-        Audio::loadSound("test", "resources/aaaaaa.wav", true);
-        Audio::playSound("test", 2.f);
-        ERR("ee %s", alGetError());
-        INFO("A");
+        //Audio::loadSound("test", "resources/aaaaaa.wav", true);
+        //Audio::playSound("test", 2.f);
         glfwSwapInterval(1);
         world->init();
         player->init();

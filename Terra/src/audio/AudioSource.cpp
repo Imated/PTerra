@@ -110,6 +110,12 @@ namespace Terra {
         return source;
     }
 
+    bool AudioSource::isPlayingOrPaused() const {
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+        return state == AL_PLAYING || state == AL_PAUSED;
+    }
+
     bool AudioSource::isPlaying() const {
         ALint state;
         alGetSourcei(source, AL_SOURCE_STATE, &state);
