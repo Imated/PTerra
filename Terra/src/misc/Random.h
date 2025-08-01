@@ -9,8 +9,11 @@ namespace Terra {
         static void setSeed(uint32_t seed);
 
         template <typename T>
-        static T get(uint32_t min, uint32_t max) {
-            return std::uniform_int_distribution<T>(min, max)(rngDevice);
+        static T get(T min, T max) {
+            if constexpr (std::is_integral_v<T>)
+                return std::uniform_int_distribution<T>(min, max)(rngDevice);
+            else
+                return std::uniform_real_distribution<T>(min, max)(rngDevice);
         }
 
     private:

@@ -34,7 +34,14 @@ add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}" ${MY_SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc")
+add_executable("${CMAKE_PROJECT_NAME}" ${MY_SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc"
+		src/audio/Audio.cpp
+		src/audio/Audio.h
+		src/audio/AudioFile.h
+		src/audio/AudioBuffer.cpp
+		src/audio/AudioBuffer.h
+		src/audio/AudioSource.cpp
+		src/audio/AudioSource.h)
 
 set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY CXX_STANDARD 20)
 
@@ -46,7 +53,20 @@ if(PRODUCTION_BUILD)
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
-			$<TARGET_FILE_DIR:terra>/resources)
+			$<TARGET_FILE_DIR:terra>/resources
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/OpenAL/OpenAL32.dll
+			$<TARGET_FILE_DIR:terra>
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/OpenAL/OpenAL32.lib
+			$<TARGET_FILE_DIR:terra>
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/sndfile.dll
+			$<TARGET_FILE_DIR:terra>
+	)
 else()
 	# This is useful to get an ASSETS_PATH in your IDE during development
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0) 
@@ -54,7 +74,20 @@ else()
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/resources
-			$<TARGET_FILE_DIR:terra>/resources)
+			$<TARGET_FILE_DIR:terra>/resources
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/OpenAL/OpenAL32.dll
+			$<TARGET_FILE_DIR:terra>
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/OpenAL/OpenAL32.lib
+			$<TARGET_FILE_DIR:terra>
+
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_SOURCE_DIR}/libs/sndfile.dll
+			$<TARGET_FILE_DIR:terra>
+	)
 endif()
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
@@ -72,4 +105,7 @@ endif()
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
-target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glfw glad glm)
+link_directories("${CMAKE_SOURCE_DIR}/libs" "${CMAKE_SOURCE_DIR}/libs/OpenAL")
+
+target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glfw glad glm "${CMAKE_SOURCE_DIR}/libs/OpenAL/OpenAL32.lib" "${CMAKE_SOURCE_DIR}/libs/sndfile.lib")
+

@@ -1,5 +1,8 @@
 ﻿#include "Terra.h"
 
+#include "audio/Audio.h"
+#include "audio/AudioBuffer.h"
+#include "audio/AudioSource.h"
 #include "misc/Constants.h"
 #include "misc/Random.h"
 #include "renderer/ShaderLibrary.h"
@@ -28,6 +31,9 @@ namespace Terra
                             });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
+        Audio::init();
+        //Audio::loadSound("test", "resources/aaaaaa.wav", true);
+        //Audio::playSound("test", 2.f);
         glfwSwapInterval(1);
         world->init();
         player->init();
@@ -63,6 +69,8 @@ namespace Terra
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);
             player->render(vp);
+
+            Audio::update();
 
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();
