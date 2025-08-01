@@ -17,6 +17,7 @@ namespace Terra {
         static void unloadSound(std::string id);
         static ALuint getSound(std::string id);
         static AudioSource* playSound(std::string soundID, float pitch = 1.f, float gain = 1.f, glm::vec2 position = {}, glm::vec2 velocity = {}, bool loop = false);
+        static void playSound(std::string soundID, AudioSource& source, float pitch = 1.f, float gain = 1.f, glm::vec2 position = {}, glm::vec2 velocity = {}, bool loop = false);
     private:
         static int getFreeAudioSource();
 

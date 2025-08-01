@@ -31,7 +31,20 @@ namespace Terra {
         return true;
     }
 
-    void AudioSource::startStreaming(const StreamData &data) {
+    void AudioSource::startStreaming(const StreamData &data, float pitch, float gain, glm::vec2 position, glm::vec2 velocity, bool loop) {
+        this->pitch = pitch;
+        this->gain = gain;
+        this->position = position;
+        this->velocity = velocity;
+        this->loop = loop;
+
+        alSourcei(source, AL_BUFFER, static_cast<ALint>(buffer));
+        alSourcef(source, AL_PITCH, pitch);
+        alSourcef(source, AL_GAIN, gain);
+        alSource3f(source, AL_POSITION, position.x, 0, position.y);
+        alSource3f(source, AL_VELOCITY, velocity.x, 0, velocity.y);
+        alSourcei(source, AL_LOOPING, loop);
+
         stop();
 
         stream = data;
@@ -89,12 +102,6 @@ namespace Terra {
         ALint state;
         alGetSourcei(source, AL_SOURCE_STATE, &state);
         if (state != AL_PLAYING && !stream.isFinished) {
-            alSourcei(source, AL_BUFFER, static_cast<ALint>(buffer));
-            alSourcef(source, AL_PITCH, pitch);
-            alSourcef(source, AL_GAIN, gain);
-            alSource3f(source, AL_POSITION, position.x, 0, position.y);
-            alSource3f(source, AL_VELOCITY, velocity.x, 0, velocity.y);
-            alSourcei(source, AL_LOOPING, loop);
             alSourcePlay(source);
         }
     }

@@ -20,7 +20,7 @@ namespace Terra {
 
         bool streamBuffer(ALuint buffer);
 
-        void startStreaming(const StreamData& data);
+        void startStreaming(const StreamData& data, float pitch = 1.f, float gain = 1.f, glm::vec2 position = glm::vec2(0.f, 0.f), glm::vec2 velocity = glm::vec2(0.f, 0.f), bool loop = false);
         void play(ALuint bufferToPlayer, float pitch = 1.f, float gain = 1.f, glm::vec2 position = glm::vec2(0.f, 0.f), glm::vec2 velocity = glm::vec2(0.f, 0.f), bool loop = false);
 
         void updateStream();

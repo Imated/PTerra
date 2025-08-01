@@ -69,10 +69,18 @@ namespace Terra {
         }
         auto& source = sourcesPool[sourceIndex];
         if (streamMap.contains(soundID))
-            source->startStreaming(streamMap[soundID]);
+            source->startStreaming(streamMap[soundID], pitch, gain, position, velocity, loop);
         else
             source->play(sourcesMap[soundID], pitch, gain, position, velocity, loop);
         return source.get();
+    }
+
+    void Audio::playSound(std::string soundID, AudioSource &source, float pitch, float gain, glm::vec2 position,
+        glm::vec2 velocity, bool loop) {
+        if (streamMap.contains(soundID))
+            source.startStreaming(streamMap[soundID], pitch, gain, position, velocity, loop);
+        else
+            source.play(sourcesMap[soundID], pitch, gain, position, velocity, loop);
     }
 
     int Audio::getFreeAudioSource() {
