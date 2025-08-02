@@ -30,7 +30,7 @@ namespace Terra {
 
         animationTimer += deltaTime;
 
-        if (animationTimer >= 0.5f) {
+        if (animationTimer >= 0.25f) {
             currentFrame++;
             currentFrame = currentFrame % 2;
             animationTimer = 0.0f;
