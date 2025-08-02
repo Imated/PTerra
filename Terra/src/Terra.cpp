@@ -15,6 +15,7 @@ namespace Terra
         window = std::make_unique<Window>(960, 540, "Terra");
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
+        cursor = std::make_unique<Cursor>();
     }
 
     void Terra::init()
@@ -24,19 +25,23 @@ namespace Terra
                                 {Vertex, "resources/default.vert"},
                                 {Fragment, "resources/tile.frag"}
                             });
-        ShaderLibrary::load("player",
+        ShaderLibrary::load("entity",
                             {
                                 {Vertex, "resources/default.vert"},
                                 {Fragment, "resources/entity.frag"}
                             });
+        ShaderLibrary::load("cursor",
+                    {
+                        {Vertex, "resources/default.vert"},
+                        {Fragment, "resources/cursor.frag"}
+                    });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
         Audio::init();
-        //Audio::loadSound("test", "resources/aaaaaa.wav", true);
-        //Audio::playSound("test", 2.f);
         glfwSwapInterval(1);
         world->init();
         player->init();
+        cursor->init();
     }
 
     void Terra::run()
@@ -71,18 +76,12 @@ namespace Terra
             player->render(vp);
 
             Audio::update();
+            cursor->render(window.get(), vp, deltaTime);
 
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();
 
             deltaTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - startFrame).count();
-
-            //totalTime += deltaTime;
-            //frameCount++;
-
-            //double avgFPS = frameCount / totalTime;
-
-            //std::cout << "\rFPS: " << avgFPS << "          ";
         }
     }
 }

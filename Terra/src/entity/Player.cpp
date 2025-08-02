@@ -15,7 +15,7 @@ namespace Terra {
         position = glm::vec2(0, 400);
         size = glm::vec2(1, 1);
         atlas = new Texture("resources/playerAtlas.png");
-        shader = ShaderLibrary::get("player").get();
+        shader = ShaderLibrary::get("entity").get();
         camera = Renderer::getCamera();
         Audio::loadSound("playerGrassFootsteps", "resources/footstepsGrass.wav", false);
         footstepSource = Audio::playSound("playerGrassFootsteps", 1.f, 1.f, {}, {}, true);

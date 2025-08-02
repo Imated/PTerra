@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "entity/Player.h"
+#include "game/Cursor.h"
 #include "renderer/Window.h"
 #include "world/World.h"
 
@@ -20,6 +21,7 @@ namespace Terra
         std::unique_ptr<Window> window;
         std::unique_ptr<World> world;
         std::unique_ptr<Player> player;
+        std::unique_ptr<Cursor> cursor;
         double deltaTime = 0.0f;
         std::chrono::time_point<std::chrono::system_clock> startFrame;
     };
