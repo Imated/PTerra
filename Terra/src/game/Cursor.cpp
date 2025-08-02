@@ -30,9 +30,9 @@ namespace Terra {
 
         animationTimer += deltaTime;
 
-        if (animationTimer >= 0.125f) {
+        if (animationTimer >= 0.5f) {
             currentFrame++;
-            currentFrame = currentFrame % 3;
+            currentFrame = currentFrame % 2;
             animationTimer = 0.0f;
         }
 
@@ -40,7 +40,7 @@ namespace Terra {
         texture->bind(2);
         shader->setInt ("frame", currentFrame);
         shader->setInt ("cursorAtlas", 2);
-        auto mvp = glm::translate(vp, glm::vec3(position, LAYER_ENTITY));
+        auto mvp = glm::translate(vp, glm::vec3(position, LAYER_BEHIND_PLAYER));
         shader->setMatrix4x4("mvp", glm::value_ptr(mvp));
         Renderer::renderQuad();
     }
