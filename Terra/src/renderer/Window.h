@@ -17,11 +17,11 @@ namespace Terra {
         GLFWwindow* getWindow() const;
         glm::vec2 getSize() { return { params.width, params.height }; }
 
-        struct WindowParams
+        static inline struct WindowParams
         {
             int width;
             int height;
-        } params{};
+        } params;
 
     private:
         GLFWwindow* window = nullptr;

@@ -1,4 +1,5 @@
 ﻿#include "Window.h"
+#include "misc/Constants.h"
 
 namespace Terra {
     static void windowSizeCallback(GLFWwindow* window, int width, int height);
@@ -28,8 +29,9 @@ namespace Terra {
         glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
-        window = glfwCreateWindow(fullscreen ? mode->width : width, fullscreen? mode->height : height, title.c_str(), fullscreen ? monitor : nullptr, nullptr); //change NULL to monitor for full screen (no it doenst)
+        width = fullscreen ? mode->width : width;
+        height = fullscreen ? mode->height : height;
+        window = glfwCreateWindow(width, height, title.c_str(), fullscreen ? monitor : nullptr, nullptr);
         if (!window) {
             ASSERT("Failed to create window! Aborting...");
             glfwTerminate();
@@ -38,16 +40,15 @@ namespace Terra {
 
         DEBUG("Successfully Created Window.");
 
-        glfwSetWindowSizeCallback(window, windowSizeCallback);
+        glfwSetFramebufferSizeCallback(window, windowSizeCallback);
         glfwSetKeyCallback(window, keyCallback);
-
         DEBUG("Successfully Initialized GLFW.");
 
         glfwMakeContextCurrent(window);
 
-        glfwGetFramebufferSize(window, &width, &height);
         params.width = width;
         params.height = height;
+        aspect = static_cast<float>(width) / static_cast<float>(height);
         DEBUG("Successfully Fetched Window Size of: %d, %d", width, height);
 
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
@@ -70,6 +71,10 @@ namespace Terra {
 
     static void windowSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
+        Window::params.width = width;
+        Window::params.height = height;
+        aspect = static_cast<float>(width) / static_cast<float>(height);
+        VERTICAL_TILES = HORIZONTAL_TILES / aspect;
     }
 
     void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {

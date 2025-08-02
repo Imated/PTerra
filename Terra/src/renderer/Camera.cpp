@@ -17,6 +17,7 @@ namespace Terra {
 
     glm::mat4x4 Camera::getProjectionMatrix() {
         glm::mat4x4 projection = glm::mat4x4(1.0f);
+        windowSize = Window::params;
         projection = glm::ortho(0.f, HORIZONTAL_TILES, 0.f, VERTICAL_TILES);
         return projection;
     }
