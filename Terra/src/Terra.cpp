@@ -73,10 +73,10 @@ namespace Terra
 
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);
+            cursor->render(window.get(), vp, deltaTime);
             player->render(vp);
 
             Audio::update();
-            cursor->render(window.get(), vp, deltaTime);
 
             glfwSwapBuffers(window->getWindow());
             glfwPollEvents();
