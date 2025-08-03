@@ -40,12 +40,6 @@ namespace Terra {
 
         if (!Utils::fileExists("data/regions"))
             Utils::createDirectory("data/regions");
-
-        // initialize the 4 regions around camera when first starting
-        /*chunkData::createRegionFile({0, 0});
-        chunkData::createRegionFile({-1, 0});
-        chunkData::createRegionFile({0, -1});
-        chunkData::createRegionFile({-1, -1});*/
     }
 
     std::unique_ptr<Chunk> World::generateChunk(glm::ivec2 chunkPos) {
@@ -55,9 +49,9 @@ namespace Terra {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
 
                 if (pow(x, y)< 55)
-                    chunkArray[x][y] = std::make_unique<AutoTile>(1, worldBase + glm::ivec2(x, y));
+                    chunkArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y));
                 else
-                    chunkArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
+                    chunkArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y));
             }
         }
 

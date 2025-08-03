@@ -13,6 +13,12 @@ namespace Terra {
             {
                 1,
                 std::vector<uint8_t> {0}
+            }
+        );
+        registerTile(TileData
+            {
+                1,
+                std::vector<uint8_t> {1}
             });
         registerTile(TileData
             {
@@ -56,9 +62,10 @@ namespace Terra {
             return ruleRegistry.at(hgfedcba);
 
         } catch (const std::out_of_range& e) {
+            WARN("Could not find tilemap for sequence %i", hgfedcba);
             //ASSERT("Could not find matching 'hgfedcba' in map: %i", hgfedcba);
         }
-        return 65;
+        return 146;
     }
 
     void Registry::setMap(const std::string& patternStr, int frameIndex) {
