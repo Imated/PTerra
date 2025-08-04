@@ -43,26 +43,32 @@ namespace Terra {
     }
 
     std::unique_ptr<Chunk> World::generateChunk(glm::ivec2 chunkPos) {
+        //WARN("generating chunk %i %i", chunkPos.x, chunkPos.y);
         glm::ivec2 worldBase = chunkPos * glm::ivec2(CHUNK_WIDTH, CHUNK_HEIGHT);
-        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> chunkArray;
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> groundArray;
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> topArray;
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
-
                 if (pow(x, y)< 55)
-                    chunkArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y));
+                    groundArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y));
                 else
-                    chunkArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y));
+                    groundArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y));
+                if (x == y)
+                    topArray[x][y] = std::make_unique<Tile>(2, worldBase + glm::ivec2(x, y));
+                else
+                    topArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
             }
         }
 
         return std::make_unique<Chunk>(
             chunkPos,
-            std::move(chunkArray)
-        );
+            std::move(groundArray),
+            std::move(topArray)
+        ); // and here does generate chunk even get called   yah how u know  i should print shouldnt i  :(
     }
 
     // ngl even idk how ts works
-    Tile* World::getGlobalTileAt(glm::ivec2 worldPos) {
+    Tile* World::getGlobalTileAt(glm::ivec2 worldPos, bool top) {
         glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
         auto it = worldChunks.find(chunkPos);
         if (it == worldChunks.end()) {
@@ -77,18 +83,17 @@ namespace Terra {
             (worldPos.y % CHUNK_HEIGHT + CHUNK_HEIGHT) % CHUNK_HEIGHT
         };
 
-        return chunk->getTileAt(tilePos);
+        return chunk->getTileAt(tilePos, top);
     }
 
     // load chunk at pos around center chunk (camera chunk is center chunk, so load chunk around camera)
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {
         auto pos = localPos + centerChunk; // world chunk position
         auto it = worldChunks.find(pos); // try to get the chunk at world pos.
-        if (it != worldChunks.end()) { // if chunk found then set the chunks array which is an array that stores chunks that need to be rendered and updated
+        if (it != worldChunks.end()) // if chunk found then set the chunks array which is an array that stores chunks that need to be rendered and updated
             chunks[localPos.x + MAX_CHUNKS_X/2][localPos.y + MAX_CHUNKS_Y/2] = it->second.get();
-        } else {
+        else
             WARN("Tried to load chunk that doesn't exist: %d, %d", pos.x, pos.y);
-        }
     }
 
     // return an array of chunks from disk based on the region position that was passed in
@@ -109,7 +114,8 @@ namespace Terra {
                 //DEBUG("chunk pos %i %i for region %i %i", chunkX, chunkY, regionPos.x, regionPos.y);
                 //throw std::runtime_error("eee");
 
-                std::array<std::array<std::unique_ptr<Tile>, CHUNK_WIDTH>, CHUNK_HEIGHT> tiles;
+                std::array<std::array<std::unique_ptr<Tile>, CHUNK_WIDTH>, CHUNK_HEIGHT> groundTiles;
+                std::array<std::array<std::unique_ptr<Tile>, CHUNK_WIDTH>, CHUNK_HEIGHT> topTiles;
 
                 for (int tileX = 0; tileX < CHUNK_WIDTH; ++tileX) {
                     for (int tileY = 0; tileY < CHUNK_HEIGHT; ++tileY) {
@@ -118,13 +124,20 @@ namespace Terra {
                         std::memcpy(&tileType, region.data() + offset, sizeof(bool)); offset += sizeof(bool);
                         std::memcpy(&tileId, region.data() + offset, sizeof(uint16_t)); offset += sizeof(uint16_t);
                         if (tileType == TILE_TYPE_AUTO_TILE) // create tile based on tileID and type found in disk
-                            tiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            groundTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
                         else
-                            tiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            groundTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+
+                        std::memcpy(&tileType, region.data() + offset, sizeof(bool)); offset += sizeof(bool);
+                        std::memcpy(&tileId, region.data() + offset, sizeof(uint16_t)); offset += sizeof(uint16_t);
+                        if (tileType == TILE_TYPE_AUTO_TILE) // create tile based on tileID and type found in disk
+                            topTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                        else
+                            topTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
                     }
                 }
 
-                chunks.push_back(std::make_unique<Chunk>(glm::ivec2(chunkX, chunkY), std::move(tiles))); // tiles is an array of unique_ptr's and unique_ptrs cant be copied so we use std::move to move them into the chunk
+                chunks.push_back(std::make_unique<Chunk>(glm::ivec2(chunkX, chunkY), std::move(groundTiles), std::move(topTiles))); // tiles is an array of unique_ptr's and unique_ptrs cant be copied so we use std::move to move them into the chunk
             }
         }
 
@@ -162,6 +175,16 @@ namespace Terra {
                         else
                             type = TILE_TYPE_TILE; // otherwise set it to normal tile type
                         uint16_t id = tile->getId();
+                        regionData.append(reinterpret_cast<const char*>(&type), sizeof(type)); // add data to region file data
+                        regionData.append(reinterpret_cast<const char*>(&id), sizeof(id));
+
+                        tile = chunk->getTileAt({tx, ty}, true); // chunk should never be null bc we just generated it
+                        type = 0;
+                        if (dynamic_cast<AutoTile*>(tile) != nullptr) // if tile that we generated is an autotile then set its type to autotile type
+                            type = TILE_TYPE_AUTO_TILE;
+                        else
+                            type = TILE_TYPE_TILE; // otherwise set it to normal tile type
+                        id = tile->getId();
                         regionData.append(reinterpret_cast<const char*>(&type), sizeof(type)); // add data to region file data
                         regionData.append(reinterpret_cast<const char*>(&id), sizeof(id));
                     }
@@ -247,7 +270,7 @@ namespace Terra {
                 if (chunk != nullptr)
                     chunk->render(vp, tileShader);
                 else
-                    DEBUG("Chunk is null");
+                    WARN("Chunk is null");
             }
         }
     }

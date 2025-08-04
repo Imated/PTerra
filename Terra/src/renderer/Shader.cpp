@@ -38,7 +38,8 @@ namespace Terra {
             std::vector<GLchar> errorLog(maxLength);
             glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog.data());
             ERR(errorLog.data());
-            ERR("Could not compile shader!");
+            ERR("Could not compile shader! ");
+            throw std::runtime_error("Could not compile shader");
         }
         return shader;
     }

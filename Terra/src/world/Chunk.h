@@ -10,15 +10,24 @@
 namespace Terra {
     struct Chunk {
         glm::ivec2 chunkPos {};
-        std::array<std::array<std::unique_ptr<Tile>, 16>, 16> tiles;
+        std::array<std::array<std::unique_ptr<Tile>, 16>, 16> groundTiles;
+        std::array<std::array<std::unique_ptr<Tile>, 16>, 16> topTiles;
 
         Chunk() {
             for (int x = 0; x < 16; ++x)
-                for (int y = 0; y < 16; ++y)
-                    tiles[x][y] = nullptr;
+                for (int y = 0; y < 16; ++y) {
+                    groundTiles[x][y] = nullptr;
+                    topTiles[x][y] = nullptr;
+                }
         }
 
-        Chunk(glm::ivec2 chunkPos, std::array<std::array<std::unique_ptr<Tile>, 16>, 16> tilesIn);
+        Chunk(glm::ivec2 chunkPos,
+            std::array<std::array<std::unique_ptr<Tile>, 16>, 16> groundTilesIn
+        );
+        Chunk(glm::ivec2 chunkPos,
+            std::array<std::array<std::unique_ptr<Tile>, 16>, 16> groundTilesIn,
+            std::array<std::array<std::unique_ptr<Tile>, 16>, 16> topTilesIn
+        );
 
         ~Chunk();
 
@@ -30,6 +39,6 @@ namespace Terra {
 
         void render(glm::mat4 vp, Shader* shader);
 
-        Tile* getTileAt(glm::ivec2 pos) const;
+        Tile* getTileAt(glm::ivec2 pos, bool top = false) const;
     };
 }

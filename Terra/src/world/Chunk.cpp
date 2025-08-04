@@ -8,37 +8,57 @@
 
 namespace Terra {
 
-    Chunk::Chunk(glm::ivec2 chunkPos, std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> tilesIn) : chunkPos(chunkPos), tiles(std::move(tilesIn)) { }
+    Chunk::Chunk(glm::ivec2 chunkPos,
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> groundTilesIn
+        ) : chunkPos(chunkPos), groundTiles(std::move(groundTilesIn)) {
+        for (int x = 0; x < CHUNK_WIDTH; ++x) {
+            for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+                if (x == y)
+                    topTiles[x][y] = std::make_unique<Tile>(1, glm::vec2(chunkPos.x + x, chunkPos.y + y));
+                else
+                    topTiles[x][y] = std::make_unique<Tile>(0, glm::vec2(chunkPos.x + x, chunkPos.y + y));
+            }
+        }  //im setting them
+    }
+    Chunk::Chunk(glm::ivec2 chunkPos,
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> groundTilesIn,
+        std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> topTilesIn
+    ) : chunkPos(chunkPos), groundTiles(std::move(groundTilesIn)), topTiles(std::move(topTilesIn)) { }
 
     Chunk::~Chunk() {
 
     }
 
     void Chunk::render(glm::mat4 vp, Shader* shader) {
-        std::vector<uint32_t> tileFrames;
-
-        for (int x = 0; x < CHUNK_WIDTH; x++) {
-            for (int y = 0; y < CHUNK_HEIGHT; y++) {
-                tileFrames.push_back(tiles[x][y]->getFrame());
-            }
-        }
+        // INFO("chunk being rendered");
+        // INFO("chunk at 0, 0 is %i", groundTiles[0][0]->getId());
+        // INFO("chunk at 0, 0 is %i", topTiles[0][0]->getId());
+        // throw std::runtime_error("Chunk::render() not implemented");
 
         glm::vec2 chunkPosTiles = glm::vec2(
              (chunkPos.x * CHUNK_WIDTH),
              (chunkPos.y * CHUNK_HEIGHT)
-         );
-        auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_BACKGROUND));
-        mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 0.f));
-        shader->setMatrix4x4("mvp", value_ptr(mvp));
-        shader->setUIntArray("tileFrames", 256, tileFrames.data());
+        );
 
+        std::vector<uint32_t> groundFrames, topFrames;
+        for (int x = 0; x < CHUNK_WIDTH; x++) {
+            for (int y = 0; y < CHUNK_HEIGHT; y++) {
+                groundFrames.push_back(topTiles[x][y]->getFrame());
+                topFrames.push_back(groundTiles[x][y]->getFrame());
+            }
+        }
+        auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_TILES_GROUND));
+        mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 1.f));
+        shader->setMatrix4x4("mvp", value_ptr(mvp));
+        shader->setUIntArray("groundFrames", 256, groundFrames.data());
+        shader->setUIntArray("topFrames", 256, topFrames.data());
         Renderer::renderQuad();
     }
 
     // gets tile at loacl tile position within chunk.
-    Tile* Chunk::getTileAt(glm::ivec2 pos) const {
+    Tile* Chunk::getTileAt(glm::ivec2 pos, bool top) const {
         if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return nullptr;
-        return tiles[pos.x][pos.y].get();
+        return top ? topTiles[pos.x][pos.y].get() : groundTiles[pos.x][pos.y].get();
     }
 }

@@ -21,7 +21,7 @@ public:
 
     void render(glm::mat4 vp);
 
-    static Tile* getGlobalTileAt(glm::ivec2 worldPos);
+    static Tile* getGlobalTileAt(glm::ivec2 worldPos, bool top = false);
     static std::unique_ptr<Chunk> generateChunk(glm::ivec2 chunkPos);
 
     struct chunkData {

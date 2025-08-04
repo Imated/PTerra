@@ -46,6 +46,11 @@ namespace Terra {
         setMap("01111111", 17);
         setMap("11111110", 18);
         setMap("11111011", 19);
+        /*registerTile(TileData
+            {
+                1,
+                std::vector<uint8_t> {20}
+            });*/
     }
 
     void Registry::registerTile(const TileData& tile) {
