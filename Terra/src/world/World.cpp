@@ -181,7 +181,16 @@ namespace Terra {
                 regionData.append(reinterpret_cast<const char*>(&chunkY), sizeof(chunkY));
                 //INFO("Saving chunk at world pos: (%i, %i)", chunkX, chunkY);
 
-                auto chunk = generateChunk(worldChunkPos); // gen chunk
+                auto temp = worldChunks.find(worldChunkPos);
+                Chunk* chunk;
+                if (temp == worldChunks.end()) {
+                    auto newChunk = generateChunk(worldChunkPos);
+                    chunk = newChunk.get();
+                    worldChunks[worldChunkPos] = std::move(newChunk);
+                } else
+                    chunk = temp->second.get();
+
+                 // gen chunk
 
                 for (int tx = 0; tx < CHUNK_WIDTH; ++tx) { // tx and ty are the tile offsets within the chunk
                     for (int ty = 0; ty < CHUNK_HEIGHT; ++ty) {
@@ -229,7 +238,7 @@ namespace Terra {
             for (int ry = minRegion.y; ry <= maxRegion.y; ry++) {
                 glm::ivec2 region = {rx, ry};
                 std::string filename = "data/regions/region_" + std::to_string(rx) + "_" + std::to_string(ry) + ".dat";
-                if (!Utils::fileExists(filename.c_str())) // if there isnt a region file to load, create one
+                //if (!Utils::fileExists(filename.c_str())) // if there isnt a region file to load, create one
                     chunkData::createRegionFile(region);
                 auto chunksToCache = chunkData::loadChunksFromDisk(region); // then load
                 for (auto& chunk : chunksToCache)

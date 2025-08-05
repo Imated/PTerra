@@ -59,11 +59,16 @@ namespace Terra {
     Tile* Chunk::getTileAt(glm::ivec2 pos, bool top) const {
         if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return nullptr;
-        return top ? topTiles[pos.x][pos.y].get() : groundTiles[pos.x][pos.y].get();
+        auto tile = top ? topTiles[pos.x][pos.y].get() : groundTiles[pos.x][pos.y].get();
+        if (tile == nullptr) {
+            ERR("Null?");
+            return nullptr;
+        }
+        return tile;
     }
     void Chunk::setTileAt(glm::ivec2 pos, std::unique_ptr<Tile> tile, bool top) {
         if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return;
-        top ? topTiles[pos.x][pos.y] : groundTiles[pos.x][pos.y] = std::move(std::move(tile));
+        top ? topTiles[pos.x][pos.y] : groundTiles[pos.x][pos.y] = std::move(tile);
     }
 }
