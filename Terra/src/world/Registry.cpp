@@ -6,9 +6,10 @@
 
 namespace Terra {
     std::pmr::map<uint8_t, TileData> Registry::tileRegistry;
-    std::unordered_map<uint8_t, uint8_t> Registry::ruleRegistry;
+    std::unordered_map<uint8_t, std::unordered_map<uint8_t, uint8_t>> Registry::ruleRegistry;
 
     void Registry::registerBaseItems() {
+        INFO("Registering Base Items");
         registerTile(TileData
             {
                 1,
@@ -25,32 +26,31 @@ namespace Terra {
                 1,
                 std::vector<uint8_t> {126, 127, 128, 105, 106, 107, 84, 85, 86, 129, 108, 87, 63, 64, 65, 66, 130, 131, 109, 110}
             });
-        ruleRegistry.reserve(256);
-        setMap("X1X01X0X", 0);
-        setMap("X1X11X0X", 1);
-        setMap("X1X10X0X", 2);
-        setMap("X1X01X1X", 3);
-        setMap("X1X11X1X", 4);
-        setMap("X1X10X1X", 5);
-        setMap("X0X01X1X", 6);
-        setMap("X0X11X1X", 7);
-        setMap("X0X10X1X", 8);
-        setMap("X1X00X0X", 9);
-        setMap("X1X00X1X", 10);
-        setMap("X0X00X1X", 11);
-        setMap("X0X01X0X", 12);
-        setMap("X0X11X0X", 13);
-        setMap("X0X10X0X", 14);
-        setMap("X0X00X0X", 15);
-        setMap("11011111", 16);
-        setMap("01111111", 17);
-        setMap("11111110", 18);
-        setMap("11111011", 19);
-        /*registerTile(TileData
+        setMap(2, "X1X01X0X", 0);
+        setMap(2, "X1X11X0X", 1);
+        setMap(2, "X1X10X0X", 2);
+        setMap(2, "X1X01X1X", 3);
+        setMap(2, "X1X11X1X", 4);
+        setMap(2, "X1X10X1X", 5);
+        setMap(2, "X0X01X1X", 6);
+        setMap(2, "X0X11X1X", 7);
+        setMap(2, "X0X10X1X", 8);
+        setMap(2, "X1X00X0X", 9);
+        setMap(2, "X1X00X1X", 10);
+        setMap(2, "X0X00X1X", 11);
+        setMap(2, "X0X01X0X", 12);
+        setMap(2, "X0X11X0X", 13);
+        setMap(2, "X0X10X0X", 14);
+        setMap(2, "X0X00X0X", 15);
+        setMap(2, "11011111", 16);
+        setMap(2, "01111111", 17);
+        setMap(2, "11111110", 18);
+        setMap(2, "11111011", 19);
+        registerTile(TileData
             {
                 1,
                 std::vector<uint8_t> {20}
-            });*/
+            });
     }
 
     void Registry::registerTile(const TileData& tile) {
@@ -59,12 +59,12 @@ namespace Terra {
     }
 
     TileData* Registry::getTile(const uint8_t id) {
-        return &tileRegistry[id];
+        return &tileRegistry.at(id);
     }
 
-    uint8_t Registry::getRuleTileId(uint8_t hgfedcba) {
+    uint8_t Registry::getRuleTileId(uint8_t id, uint8_t hgfedcba) {
         try {
-            return ruleRegistry.at(hgfedcba);
+            return ruleRegistry.at(id).at(hgfedcba);
 
         } catch (const std::out_of_range& e) {
             WARN("Could not find tilemap for sequence %i", hgfedcba);
@@ -73,7 +73,7 @@ namespace Terra {
         return 146;
     }
 
-    void Registry::setMap(const std::string& patternStr, int frameIndex) {
+    void Registry::setMap(uint8_t id, const std::string& patternStr, int frameIndex) {
         if (patternStr.length() != 8) {
             ERR("Invalid pattern length: %s", patternStr.c_str());
             return;
@@ -99,13 +99,13 @@ namespace Terra {
         }
 
         if (wildcardMask == 0) {
-            ruleRegistry[fixedBits] = frameIndex;
+            ruleRegistry[id][fixedBits] = frameIndex;
             return;
         }
 
         for (uint16_t combo = 0; combo < 256; ++combo) {
             if ((combo & ~wildcardMask) == (fixedBits & ~wildcardMask)) {
-                ruleRegistry[combo] = frameIndex;;
+                ruleRegistry[id][combo] = frameIndex;;
             }
         }
     }

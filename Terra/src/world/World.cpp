@@ -54,7 +54,7 @@ namespace Terra {
                 else
                     groundArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y), true);
                 if (x == y)
-                    topArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y), false);
+                    topArray[x][y] = std::make_unique<Tile>(3, worldBase + glm::ivec2(x, y), false);
                 else
                     topArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y), false);
             }

@@ -39,6 +39,6 @@ namespace Terra {
                 }
             }
         }
-        currentFrame = foundNullTile ? 146 : getTileData()->stateLocations[Registry::getRuleTileId(hgfedcba)];
+        currentFrame = foundNullTile ? 146 : getTileData()->stateLocations[Registry::getRuleTileId(id, hgfedcba)];
     }
 }
