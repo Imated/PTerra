@@ -15,7 +15,7 @@ namespace Terra {
     class Tile {
         public:
         virtual ~Tile() = default;
-        explicit Tile(uint8_t id = 0, glm::ivec2 pos = glm::ivec2(0));
+        explicit Tile(uint8_t id = 0, glm::ivec2 pos = glm::ivec2(0), bool isGroundTile = false);
 
         TileData* getTileData();
         virtual void onPlace();
@@ -27,7 +27,7 @@ namespace Terra {
 
         protected:
         uint8_t id;
-
         uint8_t currentFrame = 0;
+        bool isGround = false;
     };
 }

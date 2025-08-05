@@ -4,9 +4,10 @@
 #include "World.h"
 
 namespace Terra {
-    AutoTile::AutoTile(uint8_t id, glm::ivec2 pos) {
+    AutoTile::AutoTile(uint8_t id, glm::ivec2 pos, bool isGroundTile) {
         this->id = id;
         this->pos = pos;
+        this->isGround = isGroundTile;
     }
 
     void AutoTile::onPlace() {
@@ -23,7 +24,7 @@ namespace Terra {
             for (int y = -1; y < 2; y++) {
                 if (glm::vec2(x, y) != glm::vec2(0)) {
                     glm::ivec2 neighbor = pos + glm::ivec2(x, y);
-                    const auto tile = World::getGlobalTileAt(neighbor);
+                    const auto tile = World::getGlobalTileAt(neighbor, !isGround);
                     if (tile) {
                         if (tile->getId() == id) {
                             hgfedcba |= (1 << i);

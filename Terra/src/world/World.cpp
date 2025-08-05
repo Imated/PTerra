@@ -50,13 +50,13 @@ namespace Terra {
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int y = 0; y < CHUNK_HEIGHT; ++y) {
                 if (pow(x, y)< 55)
-                    groundArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y));
+                    groundArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y), true);
                 else
-                    groundArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y));
+                    groundArray[x][y] = std::make_unique<Tile>(1, worldBase + glm::ivec2(x, y), true);
                 if (x == y)
-                    topArray[x][y] = std::make_unique<Tile>(2, worldBase + glm::ivec2(x, y));
+                    topArray[x][y] = std::make_unique<AutoTile>(2, worldBase + glm::ivec2(x, y), false);
                 else
-                    topArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y));
+                    topArray[x][y] = std::make_unique<Tile>(0, worldBase + glm::ivec2(x, y), false);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Terra {
             chunkPos,
             std::move(groundArray),
             std::move(topArray)
-        ); // and here does generate chunk even get called   yah how u know  i should print shouldnt i  :(
+        );
     }
 
     // ngl even idk how ts works
@@ -124,16 +124,16 @@ namespace Terra {
                         std::memcpy(&tileType, region.data() + offset, sizeof(bool)); offset += sizeof(bool);
                         std::memcpy(&tileId, region.data() + offset, sizeof(uint16_t)); offset += sizeof(uint16_t);
                         if (tileType == TILE_TYPE_AUTO_TILE) // create tile based on tileID and type found in disk
-                            groundTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            groundTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY), true);
                         else
-                            groundTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            groundTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY), true);
 
                         std::memcpy(&tileType, region.data() + offset, sizeof(bool)); offset += sizeof(bool);
                         std::memcpy(&tileId, region.data() + offset, sizeof(uint16_t)); offset += sizeof(uint16_t);
                         if (tileType == TILE_TYPE_AUTO_TILE) // create tile based on tileID and type found in disk
-                            topTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            topTiles[tileX][tileY] = std::make_unique<AutoTile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY), false);
                         else
-                            topTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY));
+                            topTiles[tileX][tileY] = std::make_unique<Tile>(tileId, glm::ivec2(chunkX*CHUNK_WIDTH+tileX, chunkY*CHUNK_HEIGHT+tileY), false);
                     }
                 }
 
@@ -256,6 +256,7 @@ namespace Terra {
                         //if (chunk->getTileAt({x, y})->getId() == 1)
                         //    DEBUG("updating tile at %i %i", chunk->chunkPos.x+x, chunk->chunkPos.y+y);
                         chunk->getTileAt({x, y})->update();
+                        chunk->getTileAt({x, y}, true)->update();
                     }
                 }
             }

@@ -18,7 +18,7 @@ namespace Terra {
                 else
                     topTiles[x][y] = std::make_unique<Tile>(0, glm::vec2(chunkPos.x + x, chunkPos.y + y));
             }
-        }  //im setting them
+        }
     }
     Chunk::Chunk(glm::ivec2 chunkPos,
         std::array<std::array<std::unique_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH> groundTilesIn,
@@ -43,8 +43,8 @@ namespace Terra {
         std::vector<uint32_t> groundFrames, topFrames;
         for (int x = 0; x < CHUNK_WIDTH; x++) {
             for (int y = 0; y < CHUNK_HEIGHT; y++) {
-                groundFrames.push_back(topTiles[x][y]->getFrame());
-                topFrames.push_back(groundTiles[x][y]->getFrame());
+                groundFrames.push_back(groundTiles[x][y]->getFrame());
+                topFrames.push_back(topTiles[x][y]->getFrame());
             }
         }
         auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_TILES_GROUND));

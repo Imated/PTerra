@@ -1,9 +1,11 @@
 #include "Tile.h"
 
 namespace Terra {
-    Tile::Tile(uint8_t id, glm::ivec2 pos) {
+    Tile::Tile(uint8_t id, glm::ivec2 pos, bool isGroundTile) {
         this->id = id;
         this->pos = pos;
+        this->isGround = isGroundTile;
+        Tile::update();
     }
 
     TileData* Tile::getTileData() {

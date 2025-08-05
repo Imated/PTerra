@@ -23,8 +23,11 @@ void main() {
     vec4 groundColor = texture(mainTexture, groundAtlasUV);
     vec4 topColor = texture(mainTexture, topAtlasUV);
 
-    FragColor = topColor;
-    if (FragColor.rgb == vec3(0.0)) {
-        FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+    vec4 color = topColor;
+
+    if (topColor.a == 0) {
+        color = groundColor;
     }
+
+    FragColor = color;
 }

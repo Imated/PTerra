@@ -8,7 +8,8 @@
 #include "renderer/Shader.h"
 
 namespace Terra {
-    struct Chunk {
+    class Chunk {
+    public:
         glm::ivec2 chunkPos {};
         std::array<std::array<std::unique_ptr<Tile>, 16>, 16> groundTiles;
         std::array<std::array<std::unique_ptr<Tile>, 16>, 16> topTiles;
@@ -30,12 +31,6 @@ namespace Terra {
         );
 
         ~Chunk();
-
-        Chunk(const Chunk&) = delete;
-        Chunk& operator=(const Chunk&) = delete;
-
-        Chunk(Chunk&&) = default;
-        Chunk& operator=(Chunk&&) = default;
 
         void render(glm::mat4 vp, Shader* shader);
 

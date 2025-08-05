@@ -48,7 +48,7 @@ namespace Terra {
     int Shader::getUniformLocation(const char* name)
     {
         int location = 0;
-        if (cachedUniformLocations.find(name) != cachedUniformLocations.end())
+        if (cachedUniformLocations.contains(name))
             location = cachedUniformLocations.at(name);
         else {
             location = glGetUniformLocation(shaderID, name);
