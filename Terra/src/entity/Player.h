@@ -7,7 +7,6 @@ namespace Terra {
     class Player : public Entity {
     public:
         void init() override;
-        void handleKeys(Window *window);
         void update(Window *window, float deltaTime) override;
     private:
         Camera* camera = nullptr;

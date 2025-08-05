@@ -85,6 +85,23 @@ namespace Terra {
 
         return chunk->getTileAt(tilePos, top);
     }
+    void World::setGlobalTileAt(glm::ivec2 worldPos, std::unique_ptr<Tile> tile, bool top) {
+        glm::ivec2 chunkPos = glm::floor(glm::vec2(worldPos) / glm::vec2(CHUNK_WIDTH, CHUNK_HEIGHT));
+        auto it = worldChunks.find(chunkPos);
+        if (it == worldChunks.end()) {
+            //DEBUG("Null chunk got for chunk pos %i %i", chunkPos.x, chunkPos.y);
+            return;
+        }
+
+        Chunk* chunk = it->second.get();
+
+        glm::ivec2 tilePos = {
+            (worldPos.x % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH,
+            (worldPos.y % CHUNK_HEIGHT + CHUNK_HEIGHT) % CHUNK_HEIGHT
+        };
+
+        chunk->setTileAt(tilePos, std::move(tile), top);
+    }
 
     // load chunk at pos around center chunk (camera chunk is center chunk, so load chunk around camera)
     void World::chunkData::loadChunk(glm::ivec2 localPos, glm::ivec2 centerChunk) {

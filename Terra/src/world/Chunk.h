@@ -35,5 +35,6 @@ namespace Terra {
         void render(glm::mat4 vp, Shader* shader);
 
         Tile* getTileAt(glm::ivec2 pos, bool top = false) const;
+        void setTileAt(glm::ivec2 pos, std::unique_ptr<Tile> tile, bool top = false);
     };
 }

@@ -15,6 +15,9 @@ public:
     static bool isPressed(Terra::Window *window, int key) {
         return glfwGetKey(window->getWindow(), key) == GLFW_PRESS;
     }
+    static bool isClicked(Terra::Window *window, int key) {
+        return glfwGetMouseButton(window->getWindow(), key) == GLFW_PRESS;
+    }
 
     static void createDirectory(const char* filename) {
         std::filesystem::create_directories(filename);

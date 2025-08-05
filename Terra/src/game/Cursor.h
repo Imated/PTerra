@@ -9,7 +9,8 @@ namespace Terra {
     class Cursor {
     public:
         void init();
-        void render(Window* window, glm::mat4 vp, float deltaTime);
+        void update(Window* window, float deltaTime);
+        void render(glm::mat4 vp);
     private:
         glm::vec2 position = { };
         Texture* texture = nullptr;

@@ -41,8 +41,8 @@ namespace Terra {
         );
 
         std::vector<uint32_t> groundFrames, topFrames;
-        for (int x = 0; x < CHUNK_WIDTH; x++) {
-            for (int y = 0; y < CHUNK_HEIGHT; y++) {
+        for (int y = 0; y < CHUNK_WIDTH; y++) {
+            for (int x = 0; x < CHUNK_HEIGHT; x++) {
                 groundFrames.push_back(groundTiles[x][y]->getFrame());
                 topFrames.push_back(topTiles[x][y]->getFrame());
             }
@@ -50,8 +50,8 @@ namespace Terra {
         auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_TILES_GROUND));
         mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 1.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
-        shader->setUIntArray("groundFrames", 256, groundFrames.data());
-        shader->setUIntArray("topFrames", 256, topFrames.data());
+        shader->setUIntArray("groundFrames", CHUNK_WIDTH*CHUNK_HEIGHT, groundFrames.data());
+        shader->setUIntArray("topFrames", CHUNK_WIDTH*CHUNK_HEIGHT, topFrames.data());
         Renderer::renderQuad();
     }
 
@@ -60,5 +60,10 @@ namespace Terra {
         if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
             return nullptr;
         return top ? topTiles[pos.x][pos.y].get() : groundTiles[pos.x][pos.y].get();
+    }
+    void Chunk::setTileAt(glm::ivec2 pos, std::unique_ptr<Tile> tile, bool top) {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= CHUNK_WIDTH || pos.y >= CHUNK_HEIGHT)
+            return;
+        top ? topTiles[pos.x][pos.y] : groundTiles[pos.x][pos.y] = std::move(std::move(tile));
     }
 }

@@ -6,8 +6,11 @@
 #include "glm/ext/quaternion_common.hpp"
 #include "glm/gtc/type_ptr.inl"
 #include "misc/Constants.h"
+#include "misc/Utility.h"
 #include "renderer/Renderer.h"
 #include "renderer/ShaderLibrary.h"
+#include "world/Tile.h"
+#include "world/World.h"
 
 namespace Terra {
     void Cursor::init() {
@@ -16,7 +19,10 @@ namespace Terra {
         shader = ShaderLibrary::get("cursor").get();
     }
 
-    void Cursor::render(Window* window, glm::mat4 vp, float deltaTime) {
+    void Cursor::update(Window* window, float deltaTime) {
+        if (Utils::isClicked(window, GLFW_MOUSE_BUTTON_LEFT))
+            World::setGlobalTileAt(position, std::make_unique<Tile>(1, position));
+
         double cursorX, cursorY;
         int windowWidth, windowHeight;
         glfwGetWindowSize(window->getWindow(), &windowWidth, &windowHeight);
@@ -35,7 +41,9 @@ namespace Terra {
             currentFrame = currentFrame % 2;
             animationTimer = 0.0f;
         }
+    }
 
+    void Cursor::render(glm::mat4 vp) {
         shader->use();
         texture->bind(2);
         shader->setInt ("frame", currentFrame);

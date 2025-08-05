@@ -22,13 +22,9 @@ namespace Terra {
         Entity::init();
     }
 
-    void Player::handleKeys(Window *window) {
+    void Player::update(Window* window, float deltaTime) {
         direction.x = static_cast<float>(Utils::isPressed(window, GLFW_KEY_D) - Utils::isPressed(window, GLFW_KEY_A));
         direction.y = static_cast<float>(Utils::isPressed(window, GLFW_KEY_W) - Utils::isPressed(window, GLFW_KEY_S));
-    }
-
-    void Player::update(Window* window, float deltaTime) {
-        handleKeys(window);
         if (direction != glm::vec2(0)) {
             direction = glm::normalize(glm::vec2(direction));
             currentAnimation = 1;

@@ -62,6 +62,7 @@ namespace Terra
             startFrame = std::chrono::high_resolution_clock::now();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            cursor->update(window.get(), deltaTime);
             player->update(window.get(), deltaTime);
 
             currentChunkPos = Renderer::getCamera()->getChunk();
@@ -73,7 +74,7 @@ namespace Terra
 
             glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
             world->render(vp);
-            cursor->render(window.get(), vp, deltaTime);
+            cursor->render(vp);
             player->render(vp);
 
             Audio::update();
