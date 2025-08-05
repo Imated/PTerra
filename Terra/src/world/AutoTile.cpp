@@ -11,7 +11,11 @@ namespace Terra {
     }
 
     void AutoTile::onPlace() {
-        update();
+        for (int y = -1; y < 2; y++) {
+            for (int x = -1; x < 2; x++) {
+                World::getGlobalTileAt(pos + glm::ivec2(x, y))->update();
+            }
+        }
     }
 
     void AutoTile::update() {
