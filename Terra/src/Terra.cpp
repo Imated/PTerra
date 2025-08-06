@@ -73,6 +73,8 @@ namespace Terra
 
             cursor->update(window.get(), deltaTime);
             player->update(window.get(), deltaTime);
+            hotbar->update(window.get());
+            inventory->update(window.get());
 
             currentChunkPos = Renderer::getCamera()->getChunk();
             if (lastChunkPos != currentChunkPos) {
@@ -81,14 +83,15 @@ namespace Terra
                 lastChunkPos = currentChunkPos;
             }
 
-            glm::mat4 vp = Renderer::getCamera()->getProjectionMatrix() * Renderer::getCamera()->getViewMatrix();
+            glm::mat4 p = Renderer::getCamera()->getProjectionMatrix();
+            glm::mat4 vp = p * Renderer::getCamera()->getViewMatrix();
             world->render(vp);
             cursor->render(vp);
             player->render(vp);
 
             // Render UI (over everthing)
-            hotbar->render(vp);
-            inventory->render(vp);
+            hotbar->render(p);
+            inventory->render(p);
 
             Audio::update();
 

@@ -47,7 +47,7 @@ namespace Terra {
                 topFrames.push_back(topTiles[x][y]->getFrame());
             }
         }
-        auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, -LAYER_TILES_GROUND));
+        auto mvp = glm::translate(vp, glm::vec3(chunkPosTiles, LAYER_TILES_GROUND));
         mvp = glm::scale(mvp, glm::vec3(CHUNK_WIDTH, CHUNK_HEIGHT, 1.f));
         shader->setMatrix4x4("mvp", value_ptr(mvp));
         shader->setUIntArray("groundFrames", CHUNK_WIDTH*CHUNK_HEIGHT, groundFrames.data());
