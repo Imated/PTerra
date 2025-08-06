@@ -21,8 +21,14 @@ namespace Terra {
 
     void Cursor::update(Window* window, float deltaTime) {
         if (Utils::isClicked(window, GLFW_MOUSE_BUTTON_LEFT)) {
-            World::setGlobalTileAt(position, std::make_unique<Tile>(1, position));
-            World::getGlobalTileAt(position)->onPlace();
+            if (World::getGlobalTileAt(position, true)->getId() != 0) {// if not air
+                World::setGlobalTileAt(position, std::make_unique<Tile>(0, position, false), true);
+                World::getGlobalTileAt(position, true)->onPlace();
+            }
+            else {
+                World::setGlobalTileAt(position, std::make_unique<Tile>(1, position, true));
+                World::getGlobalTileAt(position)->onPlace();
+            }
         }
 
         double cursorX, cursorY;

@@ -11,7 +11,7 @@ namespace Terra {
     private:
         Camera* camera = nullptr;
         glm::vec2 direction = glm::vec2(0.0f);
-        AudioSource*footstepSource = nullptr;
+        AudioSource* footstepSource = nullptr;
     };
 }
 
