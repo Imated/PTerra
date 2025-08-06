@@ -5,6 +5,8 @@
 #include "entity/Player.h"
 #include "game/Cursor.h"
 #include "renderer/Window.h"
+#include "ui/Hotbar.h"
+#include "ui/Inventory.h"
 #include "world/World.h"
 
 namespace Terra
@@ -22,6 +24,8 @@ namespace Terra
         std::unique_ptr<World> world;
         std::unique_ptr<Player> player;
         std::unique_ptr<Cursor> cursor;
+        std::unique_ptr<Hotbar> hotbar;
+        std::unique_ptr<Inventory> inventory;
         double deltaTime = 0.0f;
         std::chrono::time_point<std::chrono::system_clock> startFrame;
     };

@@ -16,25 +16,32 @@ namespace Terra
         world = std::make_unique<World>();
         player = std::make_unique<Player>();
         cursor = std::make_unique<Cursor>();
+        hotbar = std::make_unique<Hotbar>();
+        inventory = std::make_unique<Inventory>();
     }
 
     void Terra::init()
     {
         ShaderLibrary::load("tile",
                             {
-                                {Vertex, "resources/default.vert"},
-                                {Fragment, "resources/tile.frag"}
+                                {Vertex, "resources/shaders/default.vert"},
+                                {Fragment, "resources/shaders/tile.frag"}
                             });
         ShaderLibrary::load("entity",
                             {
-                                {Vertex, "resources/default.vert"},
-                                {Fragment, "resources/entity.frag"}
+                                {Vertex, "resources/shaders/default.vert"},
+                                {Fragment, "resources/shaders/entity.frag"}
                             });
         ShaderLibrary::load("cursor",
                     {
-                        {Vertex, "resources/default.vert"},
-                        {Fragment, "resources/cursor.frag"}
+                        {Vertex, "resources/shaders/default.vert"},
+                        {Fragment, "resources/shaders/cursor.frag"}
                     });
+        ShaderLibrary::load("default",
+            {
+                {Vertex, "resources/shaders/default.vert"},
+                {Fragment, "resources/shaders/default.frag"}
+            });
         Renderer::initialize(window.get());
         Registry::registerBaseItems();
         Audio::init();
@@ -42,6 +49,8 @@ namespace Terra
         world->init();
         player->init();
         cursor->init();
+        hotbar->init();
+        inventory->init();
     }
 
     void Terra::run()
@@ -76,6 +85,10 @@ namespace Terra
             world->render(vp);
             cursor->render(vp);
             player->render(vp);
+
+            // Render UI (over everthing)
+            hotbar->render(vp);
+            inventory->render(vp);
 
             Audio::update();
 
