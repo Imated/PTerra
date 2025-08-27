@@ -7,7 +7,8 @@ namespace Terra {
     class Hotbar : public Container {
     public:
         Hotbar();
-
         void update(Window *window) override;
+    private:
+        bool wasPressed = false;
     };
 }

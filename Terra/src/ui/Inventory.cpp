@@ -8,9 +8,14 @@ namespace Terra {
         isOpen = false;
     }
 
-    void Inventory::update(Window *window) {
-        if (Utils::isPressed(window, GLFW_KEY_E))
-            isOpen = !isOpen;
+    void Inventory::update(Window* window) {
         Container::update(window);
+        if (Utils::isPressed(window, GLFW_KEY_E) == GLFW_PRESS && !wasPressed) {
+            isOpen = !isOpen;
+            wasPressed = true;
+        }
+        else if (Utils::isPressed(window, GLFW_KEY_E) == GLFW_RELEASE && wasPressed) {
+            wasPressed = false;
+        }
     }
 }

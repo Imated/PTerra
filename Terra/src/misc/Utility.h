@@ -12,8 +12,8 @@
 // fix this frfr
 class Utils {
 public:
-    static bool isPressed(Terra::Window *window, int key) {
-        return glfwGetKey(window->getWindow(), key) == GLFW_PRESS;
+    static int isPressed(Terra::Window *window, int key) {
+        return glfwGetKey(window->getWindow(), key);
     }
     static bool isClicked(Terra::Window *window, int key) {
         return glfwGetMouseButton(window->getWindow(), key) == GLFW_PRESS;

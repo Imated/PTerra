@@ -6,5 +6,7 @@ namespace Terra {
     public:
         void update(Window *window) override;
         Inventory();
+    private:
+        bool wasPressed = false;
     };
 }
